@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from io import BytesIO
-from ummaroyin import *
+from config import *
 import json
 import easy_pil
 from easy_pil import Editor, load_async, Font

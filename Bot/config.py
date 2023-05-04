@@ -4,10 +4,14 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 from discord import app_commands
-import random
 from client import *
 from welcomer import *
 from slash_commands import *
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+token=os.getenv('DISCORD_TOKEN')
 
 
 exts = [
@@ -33,5 +37,4 @@ class Ummaroyin(commands.Bot):
         
 if __name__ == "__main__":
     client = Ummaroyin(command_prefix="!", intents=discord.Intents.all()) 
-
-client.run("OTgxOTI0OTE3Mjg3MTk0NjI0.GbC36E.BaxE3_BMyBaxyZZTosADckLL8KYUyRR2SFvbRA")
+client.run(token)

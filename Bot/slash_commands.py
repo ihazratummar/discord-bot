@@ -1,4 +1,4 @@
-from ummaroyin import *
+from config import *
 from http.client import *
 from urllib import *
 import requests
