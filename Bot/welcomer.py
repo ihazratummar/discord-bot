@@ -4,9 +4,9 @@ from io import BytesIO
 from config import *
 import json
 import easy_pil
-from easy_pil import Editor, load_async, Font
+# from easy_pil import Editor, load_async, Font
 
-client = commands.Bot(command_prefix="!")
+# client = commands.Bot(command_prefix="!")
 
 @client.event
 async def on_ready():
@@ -15,7 +15,7 @@ async def on_ready():
 @client.event
 async def on_member_join(member):
     
-    channel = client.get_channel(540205113575473164)
+    channel = client.get_channel('874162166343815229')
     
     background = Editor("background.jpg")
     profile_image = await load_async(str(member.avatar_url))
@@ -34,3 +34,5 @@ async def on_member_join(member):
     file = discord.File(fp=BytesIO(background.image_bytes()), filename="background.jpg")
     await channel.send(f"Hello {member.mention}! Welcome to **{member.guild.name} for more information go to #rules**")
     await channel.send(file=file)
+    
+    

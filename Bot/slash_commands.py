@@ -1,3 +1,4 @@
+#region imports <- This is foldable
 from config import *
 from http.client import *
 from urllib import *
@@ -8,7 +9,11 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 from discord import app_commands
 from client import *
-
+from io import BytesIO
+from PIL import Image, ImageDraw, ImageFont
+from meme_list import meme_url
+import json
+#endregion
 
 @client.event
 async def on_ready():
@@ -52,4 +57,66 @@ async def support(interaction: discord.Interaction):
 
 @client.tree.command(name="social")
 async def social(interaction: discord.Interaction):
-    await interaction.response.send_message(f'You can check all my social profile here :\nhttps://wlo.link/@crazyforsurprise') 
+    await interaction.response.send_message(f'You can check all my social profile here :\nhttps://wlo.link/@crazyforsurprise')    
+
+@client.tree.command(name="meme", description="Get random meme")
+async def get_meme(interaction: discord.Interaction):
+    # meme_url = random.choice(meme_list)
+    responses = requests.get(meme_url)
+    image =Image.open(BytesIO(responses.content))
+    
+    caption = "Meme"
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.truetype("Lato-Bold.ttf", 20)
+    draw.text((10, 10), caption, font=font, fill ="white")
+    
+    with BytesIO() as image_binary:
+        image.save(image_binary, 'PNG')
+        image_binary.seek(0)
+        file = discord.File(fp=image_binary, filename='meme.png')
+        
+        # Send the meme to the Discord channel
+        await interaction.response.send_message(file=file)
+ 
+@client.tree.command(name="youtube", description="search video")
+async def youtube(interaction: discord.Interaction, search: str):
+    response = requests.get(f"https://youtube.com/results?search_query={search}")
+    html = response.text 
+    index = html.find("/watch?v=")
+    url = "https://www.youtube.com" + html[index:index+20]
+    await interaction.response.send_message(url)
+    
+@client.tree.command(name="warn", description="Warn a member") 
+async def warn(interaction: discord.Interaction, user: discord.Member, * , reason: str):
+    embed = discord.Embed(
+        title= 'User Warning',
+        description= f'{user.mention} has been warned by {interaction.user.mention}',
+        color = discord.Color.dark_purple()
+    )
+    
+    embed.add_field(name = 'Reason', value = reason)
+    
+    await interaction.response.send_message(embed=embed)      
+    
+@client.tree.command(name="imgur", description="search for images")
+async def imgur(interaction: discord.Interaction, *, query: str):
+    headers = {'Authorization': 'Client-ID 20c2904655c6a1f'}
+    params = {'q': query}
+    response = requests.get('https://api.imgur.com/3/gallery/search/', headers=headers, params=params)
+
+    if response.status_code == 200:
+        data = json.loads(response.content.decode('utf-8'))
+        images = [item for item in data['data'] if 'images' in item and item['images']]
+
+        if images:
+            random_image = random.choice(images)
+            image_url = random.choice(random_image['images'])['link']
+
+            embed = discord.Embed(title=f'Results for "{query}"', color=discord.Color.blue())
+            embed.set_image(url=image_url)
+            await interaction.response.send_message(embed=embed)
+        else:
+            await interaction.response.send_message(f'Sorry, no images found for "{query}"')
+    else:
+        await interaction.response.send_message('Sorry, there was an error processing your request. Please try again later.')      
+    

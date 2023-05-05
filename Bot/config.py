@@ -1,3 +1,4 @@
+#region imports <- This is foldable
 from http.client import *
 from urllib import *
 import discord
@@ -9,6 +10,8 @@ from welcomer import *
 from slash_commands import *
 from dotenv import load_dotenv
 import os
+#endregion
+# from twitter import *
 
 load_dotenv()
 token=os.getenv('DISCORD_TOKEN')
