@@ -1,4 +1,8 @@
 import random
+import requests
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
+import discord
 
 RANDOM_MEME_LIST = [
     "https://cdn.discordapp.com/attachments/874162166343815229/1103965676512755792/meme.png",
@@ -73,9 +77,26 @@ RANDOM_MEME_LIST = [
     "https://cdn.discordapp.com/attachments/1104003925369176124/1104006099578912819/which_side_are_you_on_f85d5dd3e3b8951c0d881520a1f7ccf3.jpeg",
     "https://cdn.discordapp.com/attachments/1104003925369176124/1104006108303077527/Why_is_she_like_this_2154dacd38db929f024768ed8dad86e9.jpeg",
     "https://cdn.discordapp.com/attachments/1104003925369176124/1104006129681432687/woof_woof_I_love_you_bestie._91205b6e313e7baa0436f443c85b1740.jpeg",
-    "https://cdn.discordapp.com/attachments/1104003925369176124/1104006139328340008/Yes_it_is_coming_in_some_countries_on_the_App_Store_it_has_already_come_out_f00a13583537782ab3e1353b49cee822.png"
+    "https://cdn.discordapp.com/attachments/1104003925369176124/1104006139328340008/Yes_it_is_coming_in_some_countries_on_the_App_Store_it_has_already_come_out_f00a13583537782ab3e1353b49cee822.png",
 ]
 
 meme_url = random.choice(RANDOM_MEME_LIST)
 
 print(meme_url)
+
+# for i in RANDOM_MEME_LIST:
+#     responses = requests.get(meme_url)
+#     image = Image.open(BytesIO(responses.content))
+
+#     caption = "Meme"
+#     draw = ImageDraw.Draw(image)
+#     font = ImageFont.truetype("Lato-Bold.ttf", 20)
+#     draw.text((10, 10), caption, font=font, fill="white")
+
+#     with BytesIO() as image_binary:
+#         image.save(image_binary, "PNG")
+#         image_binary.seek(0)
+#         file = discord.File(fp=image_binary, filename="meme.png")
+
+#     if __name__ == "__main__":
+#         RANDOM_MEME_LIST = RANDOM_MEME_LIST
