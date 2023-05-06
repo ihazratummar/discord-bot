@@ -119,4 +119,5 @@ async def imgur(interaction: discord.Interaction, *, query: str):
             await interaction.response.send_message(f'Sorry, no images found for "{query}"')
     else:
         await interaction.response.send_message('Sorry, there was an error processing your request. Please try again later.')      
-    
+        
+        
