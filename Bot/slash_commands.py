@@ -13,6 +13,8 @@ from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 from meme_list import meme_url
 import json
+import wget
+import os
 #endregion
 
 @client.event
@@ -62,21 +64,35 @@ async def social(interaction: discord.Interaction):
 @client.tree.command(name="meme", description="Get random meme")
 async def get_meme(interaction: discord.Interaction):
     # meme_url = random.choice(meme_list)
-    responses = requests.get(meme_url)
-    image =Image.open(BytesIO(responses.content))
+    # responses = requests.get(meme_url)
+    # image =Image.open(BytesIO(responses.content))
     
-    caption = "Meme"
-    draw = ImageDraw.Draw(image)
-    font = ImageFont.truetype("Lato-Bold.ttf", 20)
-    draw.text((10, 10), caption, font=font, fill ="white")
+    # caption = "Meme"
+    # draw = ImageDraw.Draw(image)
+    # font = ImageFont.truetype("Lato-Bold.ttf", 20)
+    # draw.text((10, 10), caption, font=font, fill ="white")
     
-    with BytesIO() as image_binary:
-        image.save(image_binary, 'PNG')
-        image_binary.seek(0)
-        file = discord.File(fp=image_binary, filename='meme.png')
+    # with BytesIO() as image_binary:
+    #     image.save(image_binary, 'PNG')
+    #     image_binary.seek(0)
+    #     file = discord.File(fp=image_binary, filename='meme.png')
         
         # Send the meme to the Discord channel
-        await interaction.response.send_message(file=file)
+
+    # Set user agent
+    opener = urllib.request.build_opener()
+    opener.addheaders = [('User-Agent', 'Mozilla/5.0')]
+    urllib.request.install_opener(opener)
+
+    try:
+        filename = wget.download(i)
+        print(f"Image downloaded to {filename}")
+    except urllib.error.HTTPError as e:
+        print(f"Failed to download image. Error code: {e.code}")
+
+    
+    await interaction.response.send_message(file=filename)
+    os.remove(filename)
  
 @client.tree.command(name="youtube", description="search video")
 async def youtube(interaction: discord.Interaction, search: str):
