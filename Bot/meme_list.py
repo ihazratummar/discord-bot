@@ -1,8 +1,5 @@
 import random
-import requests
-from PIL import Image, ImageDraw, ImageFont
-from io import BytesIO
-import discord
+from random import randint
 
 RANDOM_MEME_LIST = [
     "https://cdn.discordapp.com/attachments/874162166343815229/1103965676512755792/meme.png",
@@ -80,23 +77,11 @@ RANDOM_MEME_LIST = [
     "https://cdn.discordapp.com/attachments/1104003925369176124/1104006139328340008/Yes_it_is_coming_in_some_countries_on_the_App_Store_it_has_already_come_out_f00a13583537782ab3e1353b49cee822.png",
 ]
 
-meme_url = random.choice(RANDOM_MEME_LIST)
+meme = len(RANDOM_MEME_LIST)
+# print(meme)
+
+random_val = random.randint(1, meme)
+meme_url = RANDOM_MEME_LIST[random_val - 1]
+
 
 print(meme_url)
-
-# for i in RANDOM_MEME_LIST:
-#     responses = requests.get(meme_url)
-#     image = Image.open(BytesIO(responses.content))
-
-#     caption = "Meme"
-#     draw = ImageDraw.Draw(image)
-#     font = ImageFont.truetype("Lato-Bold.ttf", 20)
-#     draw.text((10, 10), caption, font=font, fill="white")
-
-#     with BytesIO() as image_binary:
-#         image.save(image_binary, "PNG")
-#         image_binary.seek(0)
-#         file = discord.File(fp=image_binary, filename="meme.png")
-
-#     if __name__ == "__main__":
-#         RANDOM_MEME_LIST = RANDOM_MEME_LIST

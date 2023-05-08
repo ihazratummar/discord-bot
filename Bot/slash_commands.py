@@ -84,17 +84,8 @@ async def social(interaction: discord.Interaction):
 
 @client.tree.command(name="meme", description="Get random meme")
 async def get_meme(interaction: discord.Interaction):
-    # opener = urllib.request.build_opener()
-    # opener.addheaders = [("User-Agent", "Mozilla/5.0")]
-    # urllib.request.install_opener(opener)
-    # for i in RANDOM_MEME_LIST:
-    # try:
-    #     filename = wget.download(i)
-    #     print(f"Image downloaded to {filename}")
-    # except urllib.error.HTTPError as e:
-    #     print(f"Failed to download image. Error code: {e.code}")
-    # meme_url = random.choice(meme_list)
     responses = requests.get(meme_url)
+    print(meme_url)
     image = Image.open(BytesIO(responses.content))
 
     caption = "Meme"
