@@ -6,6 +6,8 @@ import requests
 import random
 import discord
 from discord.ext import commands
+from discord.ext.commands import check
+from discord.ext.commands import MissingPermissions
 from discord.ext.commands import has_permissions
 from discord import app_commands
 from client import *
@@ -83,7 +85,7 @@ async def social(interaction: discord.Interaction):
 
 
 @client.tree.command(name="meme", description="Get random meme")
-async def get_meme(interaction: discord.Interaction):
+async def meme(interaction: discord.Interaction):
     responses = requests.get(meme_url)
     print(meme_url)
     image = Image.open(BytesIO(responses.content))

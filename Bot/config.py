@@ -10,13 +10,13 @@ from welcomer import *
 from slash_commands import *
 from dotenv import load_dotenv
 import os
+import mod_commands
 
 # endregion
 # from twitter import *
 
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
-
 
 exts = ["cogs.config", "cogs.welcomer"]
 

@@ -1,0 +1,25 @@
+By using the Ummaroyin Discord Bot ("Bot"), you agree to be bound by the following terms and conditions ("Terms of Service"). If you do not agree to these Terms of Service, please do not use the Bot.
+
+    User Conduct
+    You are responsible for your conduct while using the Bot. You must not use the Bot for any illegal or unauthorized purpose. You agree to comply with all Discord Terms of Service and Community Guidelines, as well as any other applicable laws and regulations.
+
+    User Content
+    You are solely responsible for any content that you upload, share, or otherwise transmit through the Bot. You represent and warrant that you have all necessary rights to use and share such content and that the content does not infringe upon any third-party rights.
+
+    Bot Availability
+    We make no guarantees as to the availability or uptime of the Bot. We reserve the right to modify or discontinue the Bot at any time without notice.
+
+    Disclaimer of Warranties
+    The Bot is provided "as is" and without warranty of any kind. We make no representations or warranties of any kind, express or implied, as to the operation of the Bot or the information, content, materials, or products included on the Bot.
+
+    Limitation of Liability
+    In no event shall we be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in any way connected with the use of the Bot.
+
+    Indemnification
+    You agree to indemnify and hold us harmless from any claim or demand, including reasonable attorneys' fees, made by any third-party due to or arising out of your use of the Bot, your violation of these Terms of Service, or your violation of any rights of another.
+
+    Governing Law
+    These Terms of Service shall be governed by and construed in accordance with the laws of [your state/country], without giving effect to any principles of conflicts of law.
+
+    Changes to Terms of Service
+    We reserve the right to modify these Terms of Service at any time without notice. By continuing to use the Bot after such modifications, you agree to be bound by the modified Terms of Service.
