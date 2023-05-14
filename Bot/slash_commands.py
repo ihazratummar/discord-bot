@@ -31,6 +31,12 @@ async def on_ready():
         print(e)
 
 
+@client.event
+async def on_command_error(ctx, error):
+    print(ctx.command.name + " was invoked with error")
+    print("error")
+
+
 @client.tree.command(name="ping", description="Check your ping")
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! {round(client.latency * 1000)}ms")
@@ -155,3 +161,9 @@ async def imgur(interaction: discord.Interaction, *, query: str):
         await interaction.response.send_message(
             "Sorry, there was an error processing your request. Please try again later."
         )
+
+
+@client.tree.command(name="invite", description="Invite Link")
+async def invite(interaction: discord.Interaction):
+    link = await interaction.channel.create_invite(max_age=0)
+    await interaction.response.send_message(link)
