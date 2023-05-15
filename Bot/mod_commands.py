@@ -1,26 +1,19 @@
 # region imports <- This is foldable
-
 import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import has_permissions, has_guild_permissions
-import config
-import client
-from client import *
+from client import bot
 
 
 # endregion
 
 
-def is_owner(interaction: discord.Interaction):
-    if interaction.user.id == interaction.guild.owner_id:
-        return True
-    return False
-
-
-@client.tree.command(name="kick", description="Kick a member")
+@bot.tree.command(name="kick", description="Kick a member")
 @app_commands.checks.has_permissions(administrator=True)
-async def kick(interaction: discord.Interaction, user: discord.Member):
+async def kick(
+    interaction: discord.Interaction, user: discord.Member, reason: str = " "
+):
     await user.kick()
     await interaction.response.send_message(
         f"{user.name} has been kicked by {interaction.user.name}"
@@ -34,9 +27,11 @@ async def kick_error(interaction: discord.Interaction, error):
     )
 
 
-@client.tree.command(name="ban", description="Ban a member")
+@bot.tree.command(name="ban", description="Ban a member")
 @app_commands.checks.has_permissions(administrator=True)
-async def ban(interaction: discord.Interaction, user: discord.Member):
+async def ban(
+    interaction: discord.Interaction, user: discord.Member, reason: str = " "
+):
     await user.ban()
     await interaction.response.send_message(
         f"{user.name} has been banned by {interaction.user.name}"
