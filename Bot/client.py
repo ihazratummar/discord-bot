@@ -8,6 +8,5 @@ import requests
 # endregion
 
 
-intents = discord.Intents.default()
-
-client = commands.Bot(command_prefix="!", intents=intents)
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix="!", intents=intents)

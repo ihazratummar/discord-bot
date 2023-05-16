@@ -1,5 +1,4 @@
 # region imports <- This is foldable
-from config import *
 from http.client import *
 from urllib import request
 import requests
@@ -21,22 +20,12 @@ import os
 # endregion
 
 
-@client.event
-async def on_ready():
-    print("Bot is ready.")
-    try:
-        synced = await client.tree.sync()
-        print(f"Synced {len(synced)} commands(s)")
-    except Exception as e:
-        print(e)
-
-
-@client.tree.command(name="ping", description="Check your ping")
+@bot.tree.command(name="ping", description="Check your ping")
 async def ping(interaction: discord.Interaction):
-    await interaction.response.send_message(f"Pong! {round(client.latency * 1000)}ms")
+    await interaction.response.send_message(f"Pong! {round(bot.latency * 1000)}ms")
 
 
-@client.tree.command(name="quota", description="Display quota")
+@bot.tree.command(name="quota", description="Display quota")
 async def quota(interaction: discord.Interaction):
     responses = requests.get("https://api.quotable.io/random")
     data = responses.json()
@@ -45,7 +34,7 @@ async def quota(interaction: discord.Interaction):
     await interaction.response.send_message(f"{author}:\n\n━━━━{quota}")
 
 
-@client.tree.command(name="wiki", description="Search wikipedia")
+@bot.tree.command(name="wiki", description="Search wikipedia")
 async def wiki(interaction: discord.Interaction, query: str):
     import wikipedia
 
@@ -54,14 +43,14 @@ async def wiki(interaction: discord.Interaction, query: str):
     await interaction.response.send_message(result)
 
 
-@client.tree.command(name="pc", description="Check my Gaming and Streaming pc Config")
+@bot.tree.command(name="pc", description="Check my Gaming and Streaming pc Config")
 async def pc(interaction: discord.Interaction):
     await interaction.response.send_message(
         f"Gaming PC\n\nCPU:- Ryzen 7 3700x.\nGraphics Card:- 2060 super 8gb.\nMemory - XPG 16GB 3600MHz\nStorage - 1 TB SSD /1TB HDD\n\nStreaming PC\n\nCPU: Intel i3 7th gen\nGPU: 1050Ti 4GB OC\nRAM: 8 GB 2400 MHz\nStorage: 250 GB SSD\nElgato HD60s 14000\nTotal Price:-124500"
     )
 
 
-@client.tree.command(
+@bot.tree.command(
     name="whatsapp", description="whatsapp  group daily stream notification"
 )
 async def whatsapp(interaction: discord.Interaction):
@@ -70,21 +59,21 @@ async def whatsapp(interaction: discord.Interaction):
     )
 
 
-@client.tree.command(name="support")
+@bot.tree.command(name="support")
 async def support(interaction: discord.Interaction):
     await interaction.response.send_message(
         f"You can support us by becoming a facebook page member.\nBecome a supporter:-  https://bit.ly/3xJdNzZ"
     )
 
 
-@client.tree.command(name="social")
+@bot.tree.command(name="social")
 async def social(interaction: discord.Interaction):
     await interaction.response.send_message(
         f"You can check all my social profile here :\nhttps://wlo.link/@crazyforsurprise"
     )
 
 
-@client.tree.command(name="meme", description="Get random meme")
+@bot.tree.command(name="meme", description="Get random meme")
 async def meme(interaction: discord.Interaction):
     responses = requests.get(meme_url)
     print(meme_url)
@@ -104,7 +93,7 @@ async def meme(interaction: discord.Interaction):
     await interaction.response.send_message(file=file)
 
 
-@client.tree.command(name="youtube", description="search video")
+@bot.tree.command(name="youtube", description="search video")
 async def youtube(interaction: discord.Interaction, search: str):
     response = requests.get(f"https://youtube.com/results?search_query={search}")
     html = response.text
@@ -113,7 +102,7 @@ async def youtube(interaction: discord.Interaction, search: str):
     await interaction.response.send_message(url)
 
 
-@client.tree.command(name="warn", description="Warn a member")
+@bot.tree.command(name="warn", description="Warn a member")
 async def warn(interaction: discord.Interaction, user: discord.Member, *, reason: str):
     embed = discord.Embed(
         title="User Warning",
@@ -126,7 +115,7 @@ async def warn(interaction: discord.Interaction, user: discord.Member, *, reason
     await interaction.response.send_message(embed=embed)
 
 
-@client.tree.command(name="imgur", description="search for images")
+@bot.tree.command(name="imgur", description="search for images")
 async def imgur(interaction: discord.Interaction, *, query: str):
     headers = {"Authorization": "Client-ID 20c2904655c6a1f"}
     params = {"q": query}
@@ -155,3 +144,9 @@ async def imgur(interaction: discord.Interaction, *, query: str):
         await interaction.response.send_message(
             "Sorry, there was an error processing your request. Please try again later."
         )
+
+
+@bot.tree.command(name="invite", description="Invite Link")
+async def invite(interaction: discord.Interaction):
+    link = await interaction.channel.create_invite(max_age=0)
+    await interaction.response.send_message(link)
