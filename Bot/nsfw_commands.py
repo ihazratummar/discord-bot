@@ -6,38 +6,11 @@ import requests
 from client import bot
 
 
-@bot.tree.command(name="smug", description="hentai")
-async def smug(interaction: discord.Interaction):
-    if interaction.channel.is_nsfw():
-        r = requests.get("https://nekos.life/api/v2/img/smug")
-        res = r.json()
-        em = discord.Embed()
-        em.set_image(url=res["url"])
-        await interaction.response.send_message(embed=em)
-    else:
-        await interaction.response.send_message(
-            "This command is only available in NSFW channels.", ephemeral=True
-        )
-
 
 @bot.tree.command(name="slap", description="slap")
 async def slap(interaction: discord.Interaction):
     if interaction.channel.is_nsfw():
         r = requests.get("https://nekos.life/api/v2/img/slap")
-        res = r.json()
-        em = discord.Embed()
-        em.set_image(url=res["url"])
-        await interaction.response.send_message(embed=em)
-    else:
-        await interaction.response.send_message(
-            "This command is only available in NSFW channels.", ephemeral=True
-        )
-
-
-@bot.tree.command(name="spank", description="spank")
-async def spank(interaction: discord.Interaction):
-    if interaction.channel.is_nsfw():
-        r = requests.get("https://nekos.life/api/v2/img/spank")
         res = r.json()
         em = discord.Embed()
         em.set_image(url=res["url"])

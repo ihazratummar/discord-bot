@@ -65,3 +65,17 @@ async def ban_error(interaction: discord.Interaction, error):
 #     await interaction.response.send_message(
 #         f"This this an admin only command", ephemeral=True
 #     )
+
+
+@bot.tree.command(name="embed", description="Send an embed")
+async def embed(
+    interaction: discord.Interaction,
+    title: str,
+    *,
+    message: str,
+    thumbnail: str = " ",
+    image: str = " ",
+    footer: str = " ",
+):
+    embed = discord.Embed(title=title, description=message, color=0xE8A213)
+    await interaction.response.send_message(embed=embed)
