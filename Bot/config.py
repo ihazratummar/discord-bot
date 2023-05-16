@@ -7,6 +7,8 @@ from client import bot
 import os
 import slash_commands
 import mod_commands
+import welcome
+import nsfw_commands
 
 
 # endregion
