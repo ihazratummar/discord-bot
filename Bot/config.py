@@ -27,4 +27,6 @@ async def on_ready():
         print(e)
 
 
+# this is a test command
+
 bot.run(token)
