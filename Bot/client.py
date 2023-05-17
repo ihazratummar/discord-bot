@@ -6,7 +6,3 @@ from discord.ext import commands
 import requests
 
 # endregion
-
-
-intents = discord.Intents.all()
-bot = commands.Bot(command_prefix="!", intents=intents)

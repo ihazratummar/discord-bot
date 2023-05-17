@@ -3,7 +3,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import has_permissions, has_guild_permissions
-from client import bot
+from config import bot
 
 
 # endregion
@@ -79,3 +79,25 @@ async def embed(
 ):
     embed = discord.Embed(title=title, description=message, color=0xE8A213)
     await interaction.response.send_message(embed=embed)
+
+
+@embed.error
+async def embed_error(interaction: discord.Interaction):
+    await interaction.response.send_message(
+        f"This an admin only command", ephemeral=True
+    )
+
+
+@bot.tree.command(name="purge", description="clear messages")
+@app_commands.checks.has_permissions(manage_messages=True)
+async def purge(interaction: discord.Interaction, amount: int):
+    await interaction.response.defer(thinking=True, ephemeral=True)
+    await interaction.channel.purge(limit=amount)
+    await interaction.followup.send(f"Purged {amount} messages", ephemeral=True)
+
+
+@purge.error
+async def purge_error(interaction: discord.Interaction, error):
+    await interaction.response.send_message(
+        f"This an admin only command", ephemeral=True
+    )

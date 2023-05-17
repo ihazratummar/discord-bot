@@ -3,27 +3,42 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from dotenv import load_dotenv
-from client import bot
 import os
-import slash_commands
-import mod_commands
-import welcome
+
+# import slash_commands
+
+# import mod_commands
+# import welcome
 
 
 # endregion
+# intents = discord.Intents.all()
+# bot = commands.Bot(command_prefix="!", intents=intents)
 
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 
+# cogs = ["cogs.mod", "cogs.welcomes", "cogs.fun"]
 
-@bot.event
-async def on_ready():
-    print("Bot is ready.")
-    try:
-        synced = await bot.tree.sync()
+
+#   for cog in cogs:
+#       await bot.load_extension(cog)
+
+
+class Bot(commands.Bot):
+    def __init__(self, command_prefix: str, intents: discord.Intents, **kwargs):
+        super().__init__(command_prefix, intents=intents, **kwargs)
+
+    async def setup_hook(self) -> None:
+        await self.load_extension("cogs.mod")
+        print("Moderation cog loaded.")
+        synced = await self.tree.sync()
         print(f"Synced {len(synced)} commands(s)")
-    except Exception as e:
-        print(e)
+
+    async def on_ready(self):
+        print("Bot is ready.")
 
 
-bot.run(token)
+if __name__ == "__main__":
+    bot = Bot(command_prefix="!", intents=discord.Intents.all())
+    bot.run(token)
