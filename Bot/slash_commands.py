@@ -1,15 +1,13 @@
 # region imports <- This is foldable
-from http.client import *
 from urllib import request
 import requests
 import random
 import discord
 from discord.ext import commands
 from discord.ext.commands import check
-from discord.ext.commands import MissingPermissions
 from discord.ext.commands import has_permissions
 from discord import app_commands
-from client import *
+from client import bot
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 from meme_list import meme_url
