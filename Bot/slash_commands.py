@@ -7,7 +7,7 @@ from discord.ext import commands
 from discord.ext.commands import check
 from discord.ext.commands import has_permissions
 from discord import app_commands
-from config import Bot
+from client import bot
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 from meme_list import meme_url

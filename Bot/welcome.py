@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from client import bot
 import os
 import random
 
