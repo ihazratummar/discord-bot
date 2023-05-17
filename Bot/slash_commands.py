@@ -74,7 +74,6 @@ async def social(interaction: discord.Interaction):
 @bot.tree.command(name="meme", description="Get random meme")
 async def meme(interaction: discord.Interaction):
     responses = requests.get(meme_url)
-    print(meme_url)
     image = Image.open(BytesIO(responses.content))
 
     caption = "Meme"
