@@ -14,10 +14,6 @@ from meme_list import meme_url
 import json
 import wget
 import os
-<<<<<<< HEAD
-#endregion
-=======
->>>>>>> staging
 
 # endregion
 
@@ -74,42 +70,6 @@ async def social(interaction: discord.Interaction):
         f"You can check all my social profile here :\nhttps://wlo.link/@crazyforsurprise"
     )
 
-<<<<<<< HEAD
-@client.tree.command(name="meme", description="Get random meme")
-async def get_meme(interaction: discord.Interaction):
-    # meme_url = random.choice(meme_list)
-    # responses = requests.get(meme_url)
-    # image =Image.open(BytesIO(responses.content))
-    
-    # caption = "Meme"
-    # draw = ImageDraw.Draw(image)
-    # font = ImageFont.truetype("Lato-Bold.ttf", 20)
-    # draw.text((10, 10), caption, font=font, fill ="white")
-    
-    # with BytesIO() as image_binary:
-    #     image.save(image_binary, 'PNG')
-    #     image_binary.seek(0)
-    #     file = discord.File(fp=image_binary, filename='meme.png')
-        
-        # Send the meme to the Discord channel
-
-    # Set user agent
-    opener = urllib.request.build_opener()
-    opener.addheaders = [('User-Agent', 'Mozilla/5.0')]
-    urllib.request.install_opener(opener)
-
-    try:
-        filename = wget.download(i)
-        print(f"Image downloaded to {filename}")
-    except urllib.error.HTTPError as e:
-        print(f"Failed to download image. Error code: {e.code}")
-
-    
-    await interaction.response.send_message(file=filename)
-    os.remove(filename)
- 
-@client.tree.command(name="youtube", description="search video")
-=======
 
 @bot.tree.command(name="meme", description="Get random meme")
 async def meme(interaction: discord.Interaction):
@@ -132,7 +92,6 @@ async def meme(interaction: discord.Interaction):
 
 
 @bot.tree.command(name="youtube", description="search video")
->>>>>>> staging
 async def youtube(interaction: discord.Interaction, search: str):
     response = requests.get(f"https://youtube.com/results?search_query={search}")
     html = response.text
