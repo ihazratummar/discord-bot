@@ -1,43 +1,44 @@
-#region imports <- This is foldable
-from http.client import *
-from urllib import *
+# region imports <- This is foldable
 import discord
 from discord.ext import commands
-from discord.ext.commands import has_permissions
 from discord import app_commands
-from client import *
-from welcomer import *
-from slash_commands import *
 from dotenv import load_dotenv
 import os
-#endregion
-# from twitter import *
+
+# import slash_commands
+
+# import mod_commands
+# import welcome
+
+
+# endregion
+# intents = discord.Intents.all()
+# bot = commands.Bot(command_prefix="!", intents=intents)
 
 load_dotenv()
-token=os.getenv('DISCORD_TOKEN')
+token = os.getenv("DISCORD_TOKEN")
+
+# cogs = ["cogs.mod", "cogs.welcomes", "cogs.fun"]
 
 
-exts = [
-    "cogs.ummaroyin",
-    "cogs.welcomer"
-]
+#   for cog in cogs:
+#       await bot.load_extension(cog)
 
-class Ummaroyin(commands.Bot):
+
+class Bot(commands.Bot):
     def __init__(self, command_prefix: str, intents: discord.Intents, **kwargs):
         super().__init__(command_prefix, intents=intents, **kwargs)
-        
-    async def setup_hook(self) ->None:
-        
-        for ext in exts:
-            await self.load_extension(ext)
-            
-        print("Loaded all cogs") 
-        
-        await self.tree.sync()
-        
+
+    async def setup_hook(self) -> None:
+        await self.load_extension("cogs.mod")
+        print("Moderation cog loaded.")
+        synced = await self.tree.sync()
+        print(f"Synced {len(synced)} commands(s)")
+
     async def on_ready(self):
         print("Bot is ready.")
-        
+
+
 if __name__ == "__main__":
-    client = Ummaroyin(command_prefix="!", intents=discord.Intents.all()) 
-client.run(token)
+    bot = Bot(command_prefix="!", intents=discord.Intents.all())
+    bot.run(token)
