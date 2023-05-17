@@ -18,11 +18,7 @@ import os
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 
-# cogs = ["cogs.mod", "cogs.welcomes", "cogs.fun"]
-
-
-#   for cog in cogs:
-#       await bot.load_extension(cog)
+exts = ["cogs.mod", "cogs.welcomer"]
 
 
 class Bot(commands.Bot):
@@ -30,8 +26,10 @@ class Bot(commands.Bot):
         super().__init__(command_prefix, intents=intents, **kwargs)
 
     async def setup_hook(self) -> None:
-        await self.load_extension("cogs.mod")
-        print("Moderation cog loaded.")
+        for ext in exts:
+            await self.load_extension(ext)
+            print("loaded all cogs")
+
         synced = await self.tree.sync()
         print(f"Synced {len(synced)} commands(s)")
 
