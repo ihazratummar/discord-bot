@@ -39,6 +39,12 @@ class Bot(commands.Bot):
         print("Bot is ready.")
 
 
+<<<<<<< HEAD
 if __name__ == "__main__":
     bot = Bot(command_prefix="!", intents=discord.Intents.all())
     bot.run(token)
+=======
+# this is a test command
+
+bot.run(token)
+>>>>>>> main
