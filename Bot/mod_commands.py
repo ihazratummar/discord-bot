@@ -79,3 +79,10 @@ async def embed(
 ):
     embed = discord.Embed(title=title, description=message, color=0xE8A213)
     await interaction.response.send_message(embed=embed)
+
+
+@embed.error
+async def embed_error(interaction: discord.Interaction, error):
+    await interaction.response.send_message(
+        f"This this an admin only command", ephemeral=True
+    )
