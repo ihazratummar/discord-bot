@@ -6,14 +6,10 @@ from dotenv import load_dotenv
 import os
 
 # import slash_commands
-
 # import mod_commands
 # import welcome
-
-
 # endregion
-# intents = discord.Intents.all()
-# bot = commands.Bot(command_prefix="!", intents=intents)
+
 
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")

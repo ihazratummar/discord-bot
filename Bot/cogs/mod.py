@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 from datetime import timedelta
 from config import Bot
+from datetime import datetime
 
 
 class Mod(commands.Cog):
@@ -23,6 +24,73 @@ class Mod(commands.Cog):
         await interaction.response.send_message(
             f"{member.mention} has been timed out for '{reason}'."
         )
+
+    @app_commands.command(name="ban", description="Ban a member")
+    @app_commands.checks.has_permissions(administrator=True)
+    async def ban(
+        self,
+        interaction: discord.Interaction,
+        member: discord.Member,
+        duration: int = None,
+        reason: str = None,
+    ):
+        if duration is None:
+            # Ban the member permanently
+            await member.ban(reason=reason)
+            await interaction.response.send_message(
+                f"{member.mention} has been permanently banned."
+            )
+        else:
+            # Calculate the ban duration in seconds
+            duration_seconds = duration * 60
+
+            # Ban the member for the specified duration
+            await member.ban(reason=reason, delete_message_days=0)
+            await interaction.response.send_message(
+                f"{member.mention} has been banned for {duration} minutes."
+            )
+
+            # Unban the member after the specified duration
+            await discord.utils.sleep_until(duration_seconds)
+            await member.unban(reason="Ban duration expired.")
+
+    @ban.error
+    async def ban_error(self, interaction: discord.Interaction, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await interaction.response.send_message(
+                "You don't have permission to use this command."
+            )
+        else:
+            await interaction.response.send_message(
+                "An error occurred while executing the command."
+            )
+
+    @app_commands.command(name="unban", description="Unban a member")
+    @app_commands.checks.has_permissions(administrator=True)
+    async def unban(self, interaction: discord.Interaction, member: str):
+        banned_users = await interaction.guild.bans()
+
+        for ban_entry in banned_users:
+            user = ban_entry.user
+            if str(user) == member:
+                await interaction.guild.unban(user)
+                await interaction.response.send_message(
+                    f"{user.mention} has been unbanned."
+                )
+                return
+
+        await interaction.response.send_message("User not found in the ban list.")
+
+    @unban.error
+    async def unban_error(self, interaction: discord.Interaction, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await interaction.response.send_message(
+                "You don't have permission to use this command."
+            )
+        else:
+            await interaction.response.send_message(
+                "An error occurred while executing the command."
+            )
 
 
 async def setup(bot: commands.Bot):
