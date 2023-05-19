@@ -10,6 +10,7 @@ class Welcomer(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
+    ### setup welcome message
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         if member.bot:
@@ -44,7 +45,9 @@ class Welcomer(commands.Cog):
 
         await channel.send(content=member.mention, embed=embed)
 
+    ## Setup welcome channel
     @app_commands.command()
+    @app_commands.checks.has_permissions(administrator=True)
     async def welcome(self, interaction: discord.Interaction):
         with open("data/welcome.json", "r") as f:
             records = json.load(f)

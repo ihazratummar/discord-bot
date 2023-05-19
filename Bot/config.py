@@ -5,16 +5,20 @@ from discord import app_commands
 from dotenv import load_dotenv
 import os
 
-# import slash_commands
-# import mod_commands
-# import welcome
 # endregion
 
 
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 
-exts = ["cogs.mod", "cogs.welcomer"]
+exts = [
+    "cogs.mod",
+    "cogs.welcomer",
+    "cogs.error",
+    "cogs.general",
+    "cogs.fun_commands",
+    "cogs.images",
+]
 
 
 class Bot(commands.Bot):
@@ -24,7 +28,7 @@ class Bot(commands.Bot):
     async def setup_hook(self) -> None:
         for ext in exts:
             await self.load_extension(ext)
-            print("loaded all cogs")
+        print("loaded all cogs")
 
         synced = await self.tree.sync()
         print(f"Synced {len(synced)} commands(s)")

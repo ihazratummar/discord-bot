@@ -54,17 +54,6 @@ class Mod(commands.Cog):
             await discord.utils.sleep_until(duration_seconds)
             await member.unban(reason="Ban duration expired.")
 
-    @ban.error
-    async def ban_error(self, interaction: discord.Interaction, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            await interaction.response.send_message(
-                "You don't have permission to use this command."
-            )
-        else:
-            await interaction.response.send_message(
-                "An error occurred while executing the command."
-            )
-
     @app_commands.command(name="unban", description="Unban a member")
     @app_commands.checks.has_permissions(administrator=True)
     async def unban(self, interaction: discord.Interaction, member: str):
@@ -81,16 +70,37 @@ class Mod(commands.Cog):
 
         await interaction.response.send_message("User not found in the ban list.")
 
-    @unban.error
-    async def unban_error(self, interaction: discord.Interaction, error):
-        if isinstance(error, commands.errors.CheckFailure):
+    @app_commands.command(name="warn", description="Warn a member")
+    @app_commands.checks.has_permissions(administrator=True)
+    async def warn(
+        self, interaction: discord.Interaction, user: discord.Member, *, reason: str
+    ):
+        embed = discord.Embed(
+            title="User Warning",
+            description=f"{user.mention} has been warned by {interaction.user.mention}",
+            color=discord.Color.dark_purple(),
+        )
+
+        embed.add_field(name="Reason", value=reason)
+
+        await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="mute", description="mute a member")
+    @app_commands.checks.has_permissions(administrator=True)
+    async def mute(self, interaction: discord.Interaction, member: discord.Member):
+        if member.Voice is None:
             await interaction.response.send_message(
-                "You don't have permission to use this command."
+                "The user is not currently in voice channel"
+            )
+            return
+        voice_state = member.voice
+        if voice_state.mute:
+            await interaction.response.send_message(
+                f"{member.mention} is already muted"
             )
         else:
-            await interaction.response.send_message(
-                "An error occurred while executing the command."
-            )
+            await voice_state.edit(mute=True)
+            await interaction.response.send_message(f"{member.mention} has been muted")
 
 
 async def setup(bot: commands.Bot):
