@@ -5,6 +5,7 @@ from datetime import timedelta
 from config import Bot
 from datetime import datetime, timedelta
 from discord.app_commands import Choice
+import random
 
 
 class General(commands.Cog):
@@ -18,7 +19,9 @@ class General(commands.Cog):
 
     @app_commands.command(name="ping", description="server ping")
     async def ping(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f"Ping {round(bot.latency * 1000)} ms")
+        await interaction.response.send_message(
+            f"Ping {round(self.bot.latency * 1000)} ms"
+        )
 
     @app_commands.command(name="quota", description="Display quota")
     async def quota(self, interaction: discord.Interaction):
@@ -112,22 +115,22 @@ class General(commands.Cog):
         link = await interaction.channel.create_invite(max_age=0)
         await interaction.response.send_message(link)
 
-    @app_commands.command(name="pick", description="Choose between multiple options")
-    async def pick(self, interaction: discord.Interaction, options: str):
-        option_list = options.split()
-        if len(option_list) < 2:
-            await interaction.response.send_message("please provide at least 2 options")
+    # not working
+    @commands.command(name="pick", description="Choose between multiple options")
+    async def pick(self, ctx, *options: str):
+        if len(options) < 2:
+            await ctx.send("Please provide at least 2 options.")
             return
 
-        chosen_option = random.choice(option_list)
+        chosen_option = random.choice(options)
         embed = discord.Embed(
             title="Choice",
             description=f"Chosen option: {chosen_option}",
             color=discord.Color.random(),
         )
-        embed.add_field(name="Options", value="\n".join(option_list), inline=False)
+        embed.add_field(name="Options", value="\n".join(options), inline=False)
 
-        await interaction.response.send_message(embed=embed)
+        await ctx.send(embed=embed)
 
     @app_commands.command(name="flip", description="flip a coin")
     async def flip(self, interaction: discord.Interaction):

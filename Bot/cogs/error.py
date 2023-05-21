@@ -27,23 +27,26 @@ class ErrorCog(commands.Cog):
                 f"Command OnCooldown Error. Try again after{retry_after} seconds."
             )
 
-    # ## this error for !command_error
-    # @commands.Cog.listener()
-    # async def on_command_error(ctx: commands.Context, error: commands.CommandError):
-    #     if isinstance(error, commands.MissingRequiredArgument):
-    #         return await ctx.send(f"Missing required argument - {error.params.name}")
-    #     elif isinstance(error, commands.CommandNotFound):
-    #         return await ctx.send(f"Command not found")
+    ## this error for !command_error
+    @commands.Cog.listener()
+    async def on_command_error(ctx: commands.Context, error: commands.CommandError):
+        if isinstance(error, commands.MissingRequiredArgument):
+            return await ctx.send(f"Missing required argument - {error.params.name}")
+        elif isinstance(error, commands.CommandNotFound):
+            return await ctx.send(f"Command not found")
 
-    #     elif isinstance(error, commands.MissingPermissions):
-    #         perms = ""
-    #         for p in error.missing_permissions:
-    #             perms += f"{p},"
+        elif isinstance(error, commands.MissingPermissions):
+            perms = ""
+            for p in error.missing_permissions:
+                perms += f"{p},"
 
-    #         return await ctx.send(f"You need {perms} to use this command.")
+            return await ctx.send(f"You need {perms} to use this command.")
 
-    #     else:
-    #         raise error
+        elif isinstance(error, commands.CommandOnCooldown):
+            return await ctx.send(f"Command on cooldown")
+
+        else:
+            raise error
 
 
 async def setup(bot: commands.Bot):
