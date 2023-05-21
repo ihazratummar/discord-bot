@@ -26,6 +26,8 @@ exts = [
     "cogs.fun_commands",
     "cogs.images",
     "cogs.test",
+    "cogs.economy",
+    "cogs.level",
 ]
 
 
@@ -41,13 +43,6 @@ class Bot(commands.Bot):
             print("Connected to the database.")
         except Exception as e:
             print(f"Failed to create database pool. {e}")
-
-        # async def setup_hook(self) -> None:
-        #     try:
-        #         self.db = await asyncpg.connect(conn)
-        #         print("connected to database")
-        #     except Exception as e:
-        #         print(f"Failed to connect to database. {0}".format(e))
 
         for ext in exts:
             await self.load_extension(ext)

@@ -42,6 +42,18 @@ class TestCog(commands.Cog):
         )
         return await ctx.send("Done")
 
+    @commands.command()
+    async def deletehi(self, ctx: commands.Context):
+        record = await self.bot.db.fetchval(
+            "SELECT * FROM ummaroyin_table WHERE guild_id =$1", ctx.guild.id
+        )
+        if not record:
+            return await ctx.send("No record found")
+        await self.bot.db.execute(
+            "DELETE FROM ummaroyin_table WHERE guild_id = $1", ctx.guild.id
+        )
+        return await ctx.send("Done")
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(TestCog(bot))
