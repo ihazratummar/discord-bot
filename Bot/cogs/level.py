@@ -82,13 +82,18 @@ class Level(commands.Cog):
         record: Record = await self.bot.db.fetchrow(query, user_id)
         if record:
             xp = record["xp"]
-            await interaction.response.send_message(
-                f"Your current XP is <:brawl_gems:1109869226837147698> {xp} xp."
+            embed = discord.Embed(
+                title=" ",
+                description=f"Your current XP is <:brawl_gems:1109869226837147698> {xp} xp.",
+                color=discord.Color.blurple(),
             )
+            await interaction.response.send_message(embed=embed)
         else:
-            await interaction.response.send_message(
-                "You don't have any XP yet. Start chatting to earn XP!"
+            embed = discord.Embed(
+                title=" ",
+                description="You don't have any XP yet. Start chatting to earn XP!",
             )
+            await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
     async def level(self, interaction: discord.Interaction):
@@ -98,13 +103,19 @@ class Level(commands.Cog):
         record: Record = await self.bot.db.fetchrow(query, user_id)
         if record:
             level = record["level"]
-            await interaction.response.send_message(
-                f"Your current level is <:blurple:1109870387614990367> {level} level."
+            em = discord.Embed(
+                title=" ",
+                description=f"Your current level is <:blurple:1109870387614990367> {level} level.",
+                color=discord.Color.blurple(),
             )
+            await interaction.response.send_message(embed=em)
         else:
-            await interaction.response.send_message(
-                "You don't have a level yet. Start chatting to earn XP!"
+            em = discord.Embed(
+                title=" ",
+                description="You don't have a level yet. Start chatting to earn XP!",
+                color=discord.Color.blurple(),
             )
+            await interaction.response.send_message(embed=em)
 
     @app_commands.command()
     async def resetxp(self, interaction: discord.Interaction):
