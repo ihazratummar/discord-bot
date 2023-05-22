@@ -3,6 +3,9 @@ from discord.ext import commands
 from asyncpg import Record
 from config import Bot
 from discord import app_commands
+from typing import Dict
+import mysql.connector
+from mysql.connector.errors import ProgrammingError
 
 
 class Economy(commands.Cog):
@@ -10,42 +13,48 @@ class Economy(commands.Cog):
         self.bot = bot
         self.currency_icon = "💵"
 
+    async def get_user_balance(self, user_id: str):
+        query = "SELECT balance FROM economy WHERE user_id = %(user_id)s"
+        values = {"user_id": user_id}
+        results = await self.execute_query(query, values)
+        return results[0] if results else None
+
+    async def update_user_balance(self, user_id: str, balance: int):
+        query = "UPDATE economy SET balance = %(balance)s WHERE user_id = %(user_id)s"
+        values = {"user_id": user_id, "balance": balance}
+        await self.execute_query(query, values)
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot and not message.content.startswith(
             self.bot.command_prefix
         ):  # Ignore messages from bots
             user_id = str(message.author.id)
-            query = "UPDATE economy SET balance = balance + $1 WHERE user_id = $2"
-            await self.bot.db.execute(
-                query,
-                10,
-                user_id,
-            )
+            user_data = await self.get_user_balance(user_id)
+            if user_data:
+                balance = user_data["balance"]
+                balance += 10
+                await self.update_user_balance(user_id, balance)
 
     @app_commands.command()
     async def balance(self, interaction: discord.Interaction):
         """Check the user's balance"""
-        user_id = str(interaction.user.id)
-        query = "SELECT balance FROM economy WHERE user_id = $1"
-        record: Record = await self.bot.db.fetchrow(query, user_id)
-        if record:
-            balance = record["balance"]
+        user_id = str(ctx.author.id)
+        user_data = await self.get_user_balance(user_id)
+        if user_data:
+            balance = user_data["balance"]
             balance_display = f"{self.currency_icon} {balance}"
-            await interaction.response.send_message(
-                f"Your balance is: {balance_display}"
-            )
+            await ctx.send(f"Your balance is: {balance_display}")
         else:
-            await interaction.response.send_message(
-                "You don't have an account. Use `!register` to create one."
-            )
+            await ctx.send("You don't have an account. Use `!register` to create one.")
 
     @commands.command()
     async def register(self, ctx):
         """Register an account"""
         user_id = str(ctx.author.id)
-        query = "INSERT INTO economy (user_id, balance) VALUES ($1, 0) ON CONFLICT DO NOTHING"
-        await self.bot.db.execute(query, user_id)
+        query = "INSERT INTO economy (user_id, balance) VALUES (%(user_id)s, 0) ON DUPLICATE KEY UPDATE balance = balance"
+        values = {"user_id": user_id}
+        await self.execute_query(query, values)
         await ctx.send("Account registered successfully!")
 
     @commands.command()
@@ -56,8 +65,9 @@ class Economy(commands.Cog):
             return
 
         user_id = str(ctx.author.id)
-        query = "UPDATE economy SET balance = balance + $1 WHERE user_id = $2"
-        await self.bot.db.execute(query, amount, user_id)
+        query = "UPDATE economy SET balance = balance + %(amount)s WHERE user_id = %(user_id)s"
+        values = {"amount": amount, "user_id": user_id}
+        await self.execute_query(query, values)
         await ctx.send(f"You have deposited {amount} coins.")
 
     @commands.command()
@@ -68,19 +78,18 @@ class Economy(commands.Cog):
             return
 
         user_id = str(ctx.author.id)
-        query = "SELECT balance FROM economy WHERE user_id = $1"
-        record: Record = await self.bot.db.fetchrow(query, user_id)
-        if not record:
+        user_data = await self.get_user_balance(user_id)
+        if not user_data:
             await ctx.send("You don't have an account. Use `!register` to create one.")
             return
 
-        balance = record["balance"]
+        balance = user_data["balance"]
         if amount > balance:
             await ctx.send("Insufficient funds.")
             return
 
-        query = "UPDATE economy SET balance = balance - $1 WHERE user_id = $2"
-        await self.bot.db.execute(query, amount, user_id)
+        balance -= amount
+        await self.update_user_balance(user_id, balance)
         await ctx.send(f"You have withdrawn {amount} coins.")
 
 

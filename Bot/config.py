@@ -7,6 +7,7 @@ from asyncpg.pool import create_pool
 import asyncpg
 import mysql.connector
 import urllib.parse
+from mysql.connector.errors import ProgrammingError
 
 
 # endregion
@@ -31,7 +32,6 @@ exts = [
     "cogs.images",
     "cogs.test",
     "cogs.economy",
-    "cogs.level",
 ]
 
 
@@ -41,7 +41,7 @@ class Bot(commands.Bot):
 
     async def create_db_pool(self):
         try:
-            self.db = await mysql.connector.connect(
+            self.db = mysql.connector.connect(
                 host=host, database=data, user=user, password=passw, port=port
             )
             print("Connected to the database.")
