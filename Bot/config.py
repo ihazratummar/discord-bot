@@ -2,10 +2,11 @@
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from client import bot
 import os
 from asyncpg.pool import create_pool
 import asyncpg
+import mysql.connector
+import urllib.parse
 
 
 # endregion
@@ -14,6 +15,7 @@ import asyncpg
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 # db = os.getenv("DB_CONFIG")
+
 
 data = os.getenv("database")
 user = os.getenv("username")
@@ -38,9 +40,7 @@ class Bot(commands.Bot):
 
     async def create_db_pool(self):
         try:
-            self.db = await asyncpg.create_pool(
-                database=data, user=user, password=passw
-            )
+            self.db = await mysql.connector.connect()
             print("Connected to the database.")
         except Exception as e:
             print(f"Failed to create database pool. {e}")
