@@ -16,10 +16,11 @@ load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 # db = os.getenv("DB_CONFIG")
 
-
+host = os.getenv("hostname")
 data = os.getenv("database")
 user = os.getenv("username")
 passw = os.getenv("password")
+port = os.getenv("port_id")
 
 exts = [
     "cogs.mod",
@@ -40,7 +41,9 @@ class Bot(commands.Bot):
 
     async def create_db_pool(self):
         try:
-            self.db = await mysql.connector.connect()
+            self.db = await mysql.connector.connect(
+                host=host, database=data, user=user, password=passw, port=port
+            )
             print("Connected to the database.")
         except Exception as e:
             print(f"Failed to create database pool. {e}")
