@@ -35,9 +35,10 @@ class Welcomer(commands.Cog):
             url="https://media.discordapp.net/attachments/984308077333454862/1029577248346488852/chat-rules.png?width=1025&height=302"
         )  # Replace with your own image URL if desired
 
-        channel_field = discord.utils.get(
-            member.guild.text_channels, name="🤸｜ʀᴏʟᴇ-ᴀssɪɢɴ"
-        )
+        channel_field = self.bot.get_channel(666597108413104158)
+        if not channel_field:
+            return
+
         embed.add_field(
             name="Important Channel", value=channel_field.mention, inline=True
         )
