@@ -36,7 +36,7 @@ class Welcomer(commands.Cog):
         )  # Replace with your own image URL if desired
 
         channel_field = discord.utils.get(
-            member.guild.text_channels, name="⤓public-chat👨"
+            member.guild.text_channels, name="🤸｜ʀᴏʟᴇ-ᴀssɪɢɴ"
         )
         embed.add_field(
             name="Important Channel", value=channel_field.mention, inline=True
