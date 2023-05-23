@@ -41,7 +41,17 @@ class Welcomer(commands.Cog):
         embed.add_field(
             name="Important Channel", value=channel_field.mention, inline=True
         )
-        embed.add_field(name="Invited By", value="invited_by", inline=True)
+        inviter = None
+        async for entry in member.guild.audit_logs(limit=1):
+            if entry.action == discord.AuditLogAction.invite_create:
+                inviter = entry.user
+                break
+
+        embed.add_field(
+            name="Invited By",
+            value=inviter.mention if inviter else "Unknown",
+            inline=True,
+        )
 
         await channel.send(content=member.mention, embed=embed)
 

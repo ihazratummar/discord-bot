@@ -30,8 +30,6 @@ exts = [
     "cogs.general",
     "cogs.fun_commands",
     "cogs.images",
-    "cogs.test",
-    "cogs.economy",
 ]
 
 
@@ -39,25 +37,24 @@ class Bot(commands.Bot):
     def __init__(self, command_prefix: str, intents: discord.Intents, **kwargs):
         super().__init__(command_prefix, intents=intents, **kwargs)
 
-    async def create_db_pool(self):
-        try:
-            self.db = mysql.connector.connect(
-                host=host, database=data, user=user, password=passw, port=port
-            )
-            print("Connected to the database.")
-        except Exception as e:
-            print(f"Failed to create database pool. {e}")
+        # async def create_db_pool(self):
+        #     try:
+        #         self.db = mysql.connector.connect(
+        #             host=host, database=data, user=user, password=passw, port=port
+        #         )
+        #         print("Connected to the database.")
+        #     except Exception as e:
+        #         print(f"Failed to create database pool. {e}")
 
+    async def on_ready(self):
         for ext in exts:
             await self.load_extension(ext)
         print("loaded all cogs")
 
         synced = await self.tree.sync()
         print(f"Synced {len(synced)} commands(s)")
-
-    async def on_ready(self):
         print("Bot is ready.")
-        await self.create_db_pool()
+        # await self.create_db_pool()
 
 
 if __name__ == "__main__":
