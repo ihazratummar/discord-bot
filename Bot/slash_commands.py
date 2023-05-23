@@ -9,10 +9,7 @@ from discord.ext.commands import has_permissions
 from discord import app_commands
 from client import bot
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont
-from meme_list import meme_url
 import json
-import wget
 import os
 
 # endregion
@@ -73,21 +70,32 @@ async def social(interaction: discord.Interaction):
 
 @bot.tree.command(name="meme", description="Get random meme")
 async def meme(interaction: discord.Interaction):
-    responses = requests.get(meme_url)
-    image = Image.open(BytesIO(responses.content))
+    try:
+        subreddits = [
+            "memes",
+            "dankmemes",
+            "AdviceAnimals",
+            "MemeEconomy",
+            "terriblefacebookmemes",
+        ]  # Add the desired subreddits here
+        subreddit = subreddits[random.randint(0, len(subreddits) - 1)]
+        response = requests.get(
+            f"https://api.reddit.com/r/{subreddit}/random",
+            headers={"User-Agent": "Mozilla/5.0"},
+        )
+        data = response.json()
+        meme_url = data[0]["data"]["children"][0]["data"]["url"]
+        meme_title = data[0]["data"]["children"][0]["data"]["title"]
+        embed = discord.Embed(title=meme_title, color=discord.Color.random())
+        embed.set_image(url=meme_url)
 
-    caption = "Meme"
-    draw = ImageDraw.Draw(image)
-    font = ImageFont.truetype("Lato-Bold.ttf", 20)
-    draw.text((10, 10), caption, font=font, fill="white")
-
-    with BytesIO() as image_binary:
-        image.save(image_binary, "PNG")
-        image_binary.seek(0)
-        file = discord.File(fp=image_binary, filename="meme.png")
-
-    # Send the meme to the Discord channel
-    await interaction.response.send_message(file=file)
+        await interaction.response.send_message(
+            f"{subreddit}",
+            embed=embed,
+        )
+    except Exception as e:
+        print(f"Error retrieving meme: {e}")
+        await interaction.response.send_message("sorry, i couldn't find")
 
 
 @bot.tree.command(name="youtube", description="search video")
