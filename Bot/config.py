@@ -25,7 +25,6 @@ port = os.getenv("port_id")
 
 exts = [
     "cogs.mod",
-    "cogs.welcomer",
     "cogs.error",
     "cogs.general",
     "cogs.fun_commands",
