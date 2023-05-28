@@ -36,12 +36,22 @@ class Welcomer(commands.Cog):
         )  # Replace with your own image URL if desired
 
         channel_field = discord.utils.get(
-            member.guild.text_channels, name="⤓public-chat👨"
+            member.guild.text_channels, name="🤸｜ʀᴏʟᴇ-ᴀssɪɢɴ"
         )
         embed.add_field(
             name="Important Channel", value=channel_field.mention, inline=True
         )
-        embed.add_field(name="Invited By", value="invited_by", inline=True)
+        inviter = None
+        async for entry in member.guild.audit_logs(limit=1):
+            if entry.action == discord.AuditLogAction.invite_create:
+                inviter = entry.user
+                break
+
+        embed.add_field(
+            name="Invited By",
+            value=inviter.mention if inviter else "Unknown",
+            inline=True,
+        )
 
         await channel.send(content=member.mention, embed=embed)
 
