@@ -28,72 +28,71 @@ class PubgStats(commands.Cog):
         if response.status_code == 200:
             matches = json.loads(response.text)
             # Process the matches and find the latest match of the player
-            latest_match = find_latest_match(matches, self.player_name)
+            latest_match = self.find_latest_match(matches, self.player_name)
             if latest_match is not None:
-                match_stats = get_match_stats(latest_match)
+                match_stats = self.get_match_stats(latest_match)
                 if match_stats is not None:
-                    formatted_stats = format_stats(match_stats)
+                    formatted_stats = self.format_stats(match_stats)
                     channel = self.bot.get_channel(
                         874162166343815229
                     )  # Replace CHANNEL_ID with the actual channel ID where you want to post the stats
                     await channel.send(formatted_stats)
 
-    @fetch_and_post_pubg_stats.before_loop
-    async def before_fetch_and_post_pubg_stats(self):
-        await self.bot.wait_until_ready()
+    @staticmethod
+    def find_latest_match(matches, player_name):
+        # Filter matches for the specified player
+        player_matches = [
+            match for match in matches if match["player_name"] == player_name
+        ]
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.fetch_and_post_pubg_stats.start()
+        # Sort the matches by date in descending order
+        sorted_matches = sorted(player_matches, key=lambda x: x["date"], reverse=True)
 
+        # Return the latest match if available
+        if sorted_matches:
+            return sorted_matches[0]
 
-def find_latest_match(matches, player_name):
-    # Filter matches for the specified player
-    player_matches = [match for match in matches if match["player_name"] == player_name]
+        return None
 
-    # Sort the matches by date in descending order
-    sorted_matches = sorted(player_matches, key=lambda x: x["date"], reverse=True)
+    @staticmethod
+    def get_match_stats(match):
+        # Extract the desired match stats
+        if "kills" in match:
+            total_kills = match["kills"]
+        else:
+            total_kills = 0
 
-    # Return the latest match if available
-    if sorted_matches:
-        return sorted_matches[0]
+        if "deaths" in match:
+            total_deaths = match["deaths"]
+        else:
+            total_deaths = 0
 
-    return None
+        if "map" in match:
+            map_name = match["map"]
+        else:
+            map_name = "Unknown"
 
+        # Calculate the kill-death ratio (KD)
+        if total_deaths > 0:
+            kd_ratio = total_kills / total_deaths
+        else:
+            kd_ratio = 0.0
 
-def get_match_stats(match):
-    # Extract the desired match stats
-    if "kills" in match:
-        total_kills = match["kills"]
-    else:
-        total_kills = 0
+        # Return the match stats
+        return {
+            "player_name": match["player_name"],
+            "total_kills": total_kills,
+            "kd_ratio": kd_ratio,
+            "map_name": map_name,
+        }
 
-    if "deaths" in match:
-        total_deaths = match["deaths"]
-    else:
-        total_deaths = 0
-
-    if "map" in match:
-        map_name = match["map"]
-    else:
-        map_name = "Unknown"
-
-    # Calculate the kill-death ratio (KD)
-    if total_deaths > 0:
-        kd_ratio = total_kills / total_deaths
-    else:
-        kd_ratio = 0.0
-
-    # Return the match stats
-    return {"total_kills": total_kills, "kd_ratio": kd_ratio, "map_name": map_name}
-
-
-def format_stats(stats):
-    formatted_stats = f"Player: {stats['player_name']}\n"
-    formatted_stats += f"Total Kills: {stats['total_kills']}\n"
-    formatted_stats += f"KD Ratio: {stats['kd_ratio']:.2f}\n"
-    formatted_stats += f"Map: {stats['map_name']}\n"
-    return formatted_stats
+    @staticmethod
+    def format_stats(stats):
+        formatted_stats = f"Player: {stats['player_name']}\n"
+        formatted_stats += f"Total Kills: {stats['total_kills']}\n"
+        formatted_stats += f"KD Ratio: {stats['kd_ratio']:.2f}\n"
+        formatted_stats += f"Map: {stats['map_name']}\n"
+        return formatted_stats
 
 
 player_name = "crazyforsurprise"
