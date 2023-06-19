@@ -1,13 +1,13 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from config import Bot
+import config
 import json
 import os
 
 
 class Welcomer(commands.Cog):
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: config.Bot):
         self.bot = bot
 
     ### setup welcome message
