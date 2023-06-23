@@ -90,6 +90,11 @@ class Welcomer(commands.Cog):
 
         await channel.send(content=member.mention, embed=embed)
 
+        role_id = 874718527284727838  # Replace with the actual role ID
+        role = member.guild.get_role(role_id)
+        if role:
+            await member.add_roles(role)
+
     ## Setup welcome channel
     @app_commands.command()
     @app_commands.checks.has_permissions(administrator=True)
