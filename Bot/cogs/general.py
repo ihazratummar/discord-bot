@@ -1,11 +1,9 @@
-import discord
-from discord.ext import commands
-from discord import app_commands
-from datetime import timedelta
-from config import Bot
-from datetime import datetime, timedelta
-from discord.app_commands import Choice
 import random
+import discord
+import requests
+from config import Bot
+from discord import app_commands
+from discord.ext import commands
 
 
 class General(commands.Cog):
@@ -77,38 +75,6 @@ class General(commands.Cog):
         index = html.find("/watch?v=")
         url = "https://www.youtube.com" + html[index : index + 20]
         await interaction.response.send_message(url)
-
-    @app_commands.command(name="imgur", description="search for images")
-    async def imgur(self, interaction: discord.Interaction, *, query: str):
-        headers = {"Authorization": "Client-ID 20c2904655c6a1f"}
-        params = {"q": query}
-        response = requests.get(
-            "https://api.imgur.com/3/gallery/search/", headers=headers, params=params
-        )
-
-        if response.status_code == 200:
-            data = json.loads(response.content.decode("utf-8"))
-            images = [
-                item for item in data["data"] if "images" in item and item["images"]
-            ]
-
-            if images:
-                random_image = random.choice(images)
-                image_url = random.choice(random_image["images"])["link"]
-
-                embed = discord.Embed(
-                    title=f'Results for "{query}"', color=discord.Color.blue()
-                )
-                embed.set_image(url=image_url)
-                await interaction.response.send_message(embed=embed)
-            else:
-                await interaction.response.send_message(
-                    f'Sorry, no images found for "{query}"'
-                )
-        else:
-            await interaction.response.send_message(
-                "Sorry, there was an error processing your request. Please try again later."
-            )
 
     @app_commands.command(name="invite", description="Invite Link")
     async def invite(self, interaction: discord.Interaction):

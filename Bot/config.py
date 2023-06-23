@@ -29,6 +29,8 @@ exts = [
     "cogs.general",
     "cogs.fun_commands",
     "cogs.images",
+    "cogs.pubg_stats",
+    "cogs.games"
 ]
 
 
