@@ -10,7 +10,6 @@ class Welcomer(commands.Cog):
     def __init__(self, bot: config.Bot):
         self.bot = bot
 
-    ### setup welcome message
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         if member.bot:
@@ -26,21 +25,57 @@ class Welcomer(commands.Cog):
             return
 
         embed = discord.Embed(
-            title=f"Welcome {member.name}!",
-            description=f"Welcome to the {member.guild.name}! Enjoy your stay here!",
+            title=f"Welcome to {member.guild.name}!",
+            description=f"Hi {member.mention}, Welcome to our Discord server! We're excited to have you join our community. Feel free to introduce yourself and get to know each other.",
             color=discord.Color.green(),
         )
         embed.set_thumbnail(url=member.avatar.url)
         embed.set_image(
-            url="https://media.discordapp.net/attachments/984308077333454862/1029577248346488852/chat-rules.png?width=1025&height=302"
+            url="https://img.freepik.com/premium-photo/light-blue-gradient-abstract-banner-background_8087-1851.jpg"
         )  # Replace with your own image URL if desired
 
-        channel_field = discord.utils.get(
-            member.guild.text_channels, name="🤸｜ʀᴏʟᴇ-ᴀssɪɢɴ"
-        )
-        embed.add_field(
-            name="Important Channel", value=channel_field.mention, inline=True
-        )
+        channel_fields = [
+            "📣｜sᴇʀᴠᴇʀ-ʀᴜʟᴇs",
+            "🎐｜ᴀʙᴏᴜᴛ-ʜᴀᴢʀᴀᴛ",
+        ]
+
+        channels_found = []
+
+        for channel_name in channel_fields:
+            channel_field = discord.utils.get(
+                member.guild.text_channels, name=channel_name
+            )
+            if channel_field:
+                channels_found.append(channel_field.mention)
+
+        if channels_found:
+            embed.add_field(
+                name="Important Channels",
+                value="\n".join(channels_found),
+                inline=True,
+            )
+
+        channel_fields = [
+            "📌｜sᴛʀᴇᴀᴍ",
+            "📌｜sᴏᴄɪᴀʟ",
+        ]
+
+        channels_found = []
+
+        for channel_name in channel_fields:
+            channel_field = discord.utils.get(
+                member.guild.text_channels, name=channel_name
+            )
+            if channel_field:
+                channels_found.append(channel_field.mention)
+
+        if channels_found:
+            embed.add_field(
+                name="Notification",
+                value="\n".join(channels_found),
+                inline=True,
+            )
+
         inviter = None
         async for entry in member.guild.audit_logs(limit=1):
             if entry.action == discord.AuditLogAction.invite_create:
@@ -50,7 +85,7 @@ class Welcomer(commands.Cog):
         embed.add_field(
             name="Invited By",
             value=inviter.mention if inviter else "Unknown",
-            inline=True,
+            inline=False,
         )
 
         await channel.send(content=member.mention, embed=embed)
