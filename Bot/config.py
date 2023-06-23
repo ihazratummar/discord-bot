@@ -30,7 +30,8 @@ exts = [
     "cogs.fun_commands",
     "cogs.images",
     "cogs.pubg_stats",
-    "cogs.games"
+    "cogs.games",
+    "cogs.welcomer",
 ]
 
 
