@@ -31,18 +31,9 @@ class Welcomer(commands.Cog):
         )
         embed.set_thumbnail(url=member.avatar.url)
         embed.set_image(
-            url="https://img.freepik.com/premium-photo/light-blue-gradient-abstract-banner-background_8087-1851.jpg"
+            url="https://i.gifer.com/DbRQ.gif"
         )  # Replace with your own image URL if desired
 
-<<<<<<< HEAD
-        channel_field = self.bot.get_channel(666597108413104158)
-        if not channel_field:
-            return
-
-        embed.add_field(
-            name="Important Channel", value=channel_field.mention, inline=True
-        )
-=======
         channel_fields = [
             "📣｜sᴇʀᴠᴇʀ-ʀᴜʟᴇs",
             "🎐｜ᴀʙᴏᴜᴛ-ʜᴀᴢʀᴀᴛ",
@@ -85,7 +76,6 @@ class Welcomer(commands.Cog):
                 inline=True,
             )
 
->>>>>>> ummaroyin
         inviter = None
         async for entry in member.guild.audit_logs(limit=1):
             if entry.action == discord.AuditLogAction.invite_create:
