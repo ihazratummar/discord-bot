@@ -4,6 +4,13 @@ import requests
 from config import Bot
 from discord import app_commands
 from discord.ext import commands
+from dotenv import load_dotenv
+import os
+import aiohttp
+
+load_dotenv()
+
+WEATHER_API = os.getenv("WEATHER_API")
 
 
 class General(commands.Cog):
@@ -73,7 +80,7 @@ class General(commands.Cog):
         response = requests.get(f"https://youtube.com/results?search_query={search}")
         html = response.text
         index = html.find("/watch?v=")
-        url = "https://www.youtube.com" + html[index : index + 20]
+        url = "https://www.youtube.com" + html[index: index + 20]
         await interaction.response.send_message(url)
 
     @app_commands.command(name="invite", description="Invite Link")
@@ -105,6 +112,28 @@ class General(commands.Cog):
             await interaction.response.send_message("Head")
         else:
             await interaction.response.send_message("Tail")
+
+    @app_commands.command(name="weather", description="check your city weather")
+    async def weather(self, interaction: discord.Interaction, *, city: str):
+        url = f'http://api.weatherapi.com/v1/current.json?key={WEATHER_API}&q={city}'
+        response = requests.get(url)
+        data = response.json()
+
+        location = data["location"]["name"]
+        region = data["location"]["region"]
+        temp_c = data["current"]["temp_c"]
+        condition = data["current"]["condition"]["text"]
+        img_url = "http" + data["current"]["condition"]["icon"]
+        wind_kph = data["current"]["wind_kph"]
+
+        embed = discord.Embed(
+            title=f"Weather for {location}/{region}",
+            description=f"The condition in `{location}/{region}` is `{condition}`",
+        )
+        embed.add_field(name="Temperature", value=f"{temp_c}", inline=True)
+        embed.add_field(name="Wind", value=f"{wind_kph}", inline=True)
+        embed.set_thumbnail(url=img_url)
+        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot: commands.Bot):

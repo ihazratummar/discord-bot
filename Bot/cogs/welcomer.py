@@ -110,6 +110,14 @@ class Welcomer(commands.Cog):
             f"Successfully {interaction.channel.mention} is your welcome channel."
         )
 
+    @commands.Cog.listener()
+    async def on_boost(self, guild: discord.Guild, booster: discord.Member):
+        boost_channel_id = 1123909975522160691
+        boost_channel = self.bot.get_channel(boost_channel_id)
+        if boost_channel:
+            message = (f"Thank you for boosting, {booster.mention}",)
+        await boost_channel.send_message(message)
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Welcomer(bot))

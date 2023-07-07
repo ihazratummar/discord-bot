@@ -32,6 +32,7 @@ exts = [
     "cogs.pubg_stats",
     "cogs.games",
     "cogs.welcomer",
+    "cogs.global_chat",
 ]
 
 
