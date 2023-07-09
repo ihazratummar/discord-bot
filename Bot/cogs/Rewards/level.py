@@ -3,6 +3,7 @@ from discord.ext import commands
 from asyncpg import Record
 from config import Bot
 from discord import app_commands
+from config import db
 
 
 class Level(commands.Cog):

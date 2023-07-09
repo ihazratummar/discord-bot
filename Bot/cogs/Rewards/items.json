@@ -1,0 +1,9 @@
+{
+    "items": [
+        {"name": "item1", "price": 100},
+        {"name": "item2", "price": 200},
+        {"name": "item3", "price": 150},
+        {"name": "item4", "price": 300},
+        {"name": "item5", "price": 250}
+    ]
+}

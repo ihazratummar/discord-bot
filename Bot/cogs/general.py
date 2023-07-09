@@ -80,7 +80,7 @@ class General(commands.Cog):
         response = requests.get(f"https://youtube.com/results?search_query={search}")
         html = response.text
         index = html.find("/watch?v=")
-        url = "https://www.youtube.com" + html[index: index + 20]
+        url = "https://www.youtube.com" + html[index : index + 20]
         await interaction.response.send_message(url)
 
     @app_commands.command(name="invite", description="Invite Link")
@@ -115,7 +115,7 @@ class General(commands.Cog):
 
     @app_commands.command(name="weather", description="check your city weather")
     async def weather(self, interaction: discord.Interaction, *, city: str):
-        url = f'http://api.weatherapi.com/v1/current.json?key={WEATHER_API}&q={city}'
+        url = f"http://api.weatherapi.com/v1/current.json?key={WEATHER_API}&q={city}"
         response = requests.get(url)
         data = response.json()
 
