@@ -7,6 +7,8 @@ from typing import Dict
 import mysql.connector
 import json
 from mysql.connector.errors import ProgrammingError
+from datetime import datetime, timedelta
+
 
 
 class Economy(commands.Cog):
@@ -79,7 +81,7 @@ class Economy(commands.Cog):
                     balance += int(reward*2)
                 elif yt_legend:
                     balance += int(reward*3.5)
-                
+
                 await self.update_user_balance(user_id, balance)
 
     @commands.command()

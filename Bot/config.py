@@ -8,6 +8,7 @@ import asyncpg
 import mysql.connector
 import urllib.parse
 from mysql.connector.errors import ProgrammingError
+import asyncio
 
 
 # endregion
@@ -39,6 +40,7 @@ exts = [
 class Bot(commands.Bot):
     def __init__(self, command_prefix: str, intents: discord.Intents, **kwargs):
         super().__init__(command_prefix, intents=intents, **kwargs)
+        self.db_refresh_interval = 300
 
     async def create_db_pool(self):
         try:
@@ -51,6 +53,7 @@ class Bot(commands.Bot):
             print("Connected to the database.")
         except mysql.connector.errors as e:
             print(f"Failed to create database pool. {e}")
+        await asyncio.sleep(self.db_refresh_interval)
 
     async def on_ready(self):
         for ext in exts:
