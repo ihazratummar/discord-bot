@@ -10,7 +10,6 @@ import urllib.parse
 from mysql.connector.errors import ProgrammingError
 import asyncio
 
-
 # endregion
 
 
@@ -49,6 +48,7 @@ class Bot(commands.Bot):
                 database=data,
                 user=user,
                 password=passw,
+                connection_timeout=self.db_refresh_interval,
             )
             print("Connected to the database.")
         except mysql.connector.errors as e:
