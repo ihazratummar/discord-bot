@@ -40,6 +40,7 @@ class Bot(commands.Bot):
     def __init__(self, command_prefix: str, intents: discord.Intents, **kwargs):
         super().__init__(command_prefix, intents=intents, **kwargs)
         self.db_refresh_interval = 300
+        self.db_pool = None
 
     async def create_db_pool(self):
         try:
@@ -48,12 +49,12 @@ class Bot(commands.Bot):
                 database=data,
                 user=user,
                 password=passw,
+                autocommit=True,
                 connection_timeout=self.db_refresh_interval,
             )
             print("Connected to the database.")
-        except mysql.connector.errors as e:
+        except (mysql.connector.Error, asyncpg.PoolError) as e:
             print(f"Failed to create database pool. {e}")
-        await asyncio.sleep(self.db_refresh_interval)
 
     async def on_ready(self):
         for ext in exts:
@@ -64,6 +65,13 @@ class Bot(commands.Bot):
         print(f"Synced {len(synced)} commands(s)")
         print("Bot is ready.")
         await self.create_db_pool()
+
+    async def close(self):
+        await super().close()
+        await self.create_db_pool.close()
+
+    async def on_disconnect(self):
+        print("Disconnected from database")
 
 
 if __name__ == "__main__":
