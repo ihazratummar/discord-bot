@@ -13,7 +13,16 @@ class Welcomer(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         if member.bot:
-            return
+            first_role_id = 511215381420048384
+            first_role = member.guild.get_role(first_role_id)
+            if first_role:
+                await member.add_roles(first_role)
+
+            second_role_id = 567387858546065408
+            second_role = member.guild.get_role(second_role_id)
+            if second_role:
+                await member.add_roles(second_role)
+
         with open("data/welcome.json", "r") as f:
             records = json.load(f)
         try:
