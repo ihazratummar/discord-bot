@@ -44,13 +44,6 @@ class YouTubeNotifier(commands.Cog):
         # Return True if you are live, False otherwise
         return False
 
-    def cog_unload(self):
-        if self.check_live_task:
-            self.check_live_task.cancel()
-
-        if self.live_message:
-            asyncio.create_task(self.live_message.delete())
-
 
 def setup(bot: commands.bot):
     bot.add_cog(YouTubeNotifier(bot))
