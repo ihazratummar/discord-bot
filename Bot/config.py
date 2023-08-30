@@ -41,6 +41,7 @@ class Bot(commands.Bot):
         super().__init__(command_prefix, intents=intents, **kwargs)
         self.db_refresh_interval = 300
         self.db_pool = None
+        self.db_connection = None
 
     async def create_db_pool(self):
         try:
@@ -67,8 +68,10 @@ class Bot(commands.Bot):
         await self.create_db_pool()
 
     async def close(self):
+        if self.db_connection:
+            self.db_connection.close()
+            print("Closed db connection.")
         await super().close()
-        await self.create_db_pool.close()
 
     async def on_disconnect(self):
         print("Disconnected from database")
