@@ -57,6 +57,11 @@ class Bot(commands.Bot):
         except (mysql.connector.Error, asyncpg.PoolError) as e:
             print(f"Failed to create database pool. {e}")
 
+    async def check_db_connection(self):
+        if self.db_connection and not self.db_connection.is_connected():
+            print("database connection lost. Reconnecting...")
+            await self.create_db_connection()
+
     async def on_ready(self):
         for ext in exts:
             await self.load_extension(ext)
@@ -75,6 +80,7 @@ class Bot(commands.Bot):
 
     async def on_disconnect(self):
         print("Disconnected from database")
+        await self.check_db_connection()
 
 
 if __name__ == "__main__":
