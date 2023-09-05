@@ -9,6 +9,7 @@ import mysql.connector
 import urllib.parse
 from mysql.connector.errors import ProgrammingError
 import asyncio
+from discord import Activity, ActivityType
 
 # endregion
 
@@ -73,6 +74,12 @@ class Bot(commands.Bot):
         print(f"Synced {len(synced)} commands(s)")
         print("Bot is ready.")
         await self.create_db_pool()
+
+        activity = Activity(
+            name="CrazyforSurprise",
+            type=ActivityType.watching,
+        )
+        await self.change_presence(activity=activity)
 
     async def close(self):
         if self.db_connection:
