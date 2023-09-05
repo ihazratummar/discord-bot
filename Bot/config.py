@@ -90,6 +90,7 @@ class Bot(commands.Bot):
     async def on_disconnect(self):
         print("Disconnected from database")
         await self.check_db_connection()
+        await self.create_db_connection()
 
 
 if __name__ == "__main__":
