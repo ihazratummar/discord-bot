@@ -80,6 +80,7 @@ class Bot(commands.Bot):
             type=ActivityType.watching,
         )
         await self.change_presence(activity=activity)
+        await self.create_db_pool()
 
     async def close(self):
         if self.db_connection:
@@ -90,7 +91,7 @@ class Bot(commands.Bot):
     async def on_disconnect(self):
         print("Disconnected from database")
         await self.check_db_connection()
-        await self.create_db_connection()
+        await self.create_db_pool()
 
 
 if __name__ == "__main__":
