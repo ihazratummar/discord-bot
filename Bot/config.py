@@ -33,6 +33,8 @@ exts = [
     "cogs.welcomer",
     "cogs.global_chat",
     "cogs.Rewards.economy",
+    "cogs.Automod.automod",
+    "cogs.Automod.settings",
 ]
 
 

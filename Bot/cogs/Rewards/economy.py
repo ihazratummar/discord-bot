@@ -10,19 +10,10 @@ from mysql.connector.errors import ProgrammingError
 from datetime import datetime, timedelta
 
 
-
 class Economy(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.currency_icon = "💵"
-        # self.item_store = self.load_item_store()
-        # self.user_purchases = {}
-
-    # def load_item_store(self):
-    #     with open("items.json", "r") as file:
-    #         data = json.load(file)
-    #         item_store = {item["name"]: item["price"] for item in data["items"]}
-    #     return item_store
 
     async def get_user_balance(self, user_id: int):
         query = "SELECT balance FROM economy WHERE user_id = %s"
@@ -48,39 +39,43 @@ class Economy(commands.Cog):
         ):
             user_id = message.author.id
             user_balance = await self.get_user_balance(user_id)
-            
+
             special_role_id_1 = 874873326701527100
             yt_1 = 1122971360415723681
             yt_serdar = 1122971360415723682
             yt_elite = 1122971360415723683
             yt_legend = 1122971360415723684
             booster = 675282018954641409
-            
-            
-            
-            has_special_role_id_1 = any(role.id == special_role_id_1 for role in message.author.roles)
+
+            has_special_role_id_1 = any(
+                role.id == special_role_id_1 for role in message.author.roles
+            )
             yt_1 = any(role.id == special_role_id_1 for role in message.author.roles)
-            yt_serdar = any(role.id == special_role_id_1 for role in message.author.roles)
-            yt_elite = any(role.id == special_role_id_1 for role in message.author.roles)
-            yt_legend = any(role.id == special_role_id_1 for role in message.author.roles)
+            yt_serdar = any(
+                role.id == special_role_id_1 for role in message.author.roles
+            )
+            yt_elite = any(
+                role.id == special_role_id_1 for role in message.author.roles
+            )
+            yt_legend = any(
+                role.id == special_role_id_1 for role in message.author.roles
+            )
             booster = any(role.id == special_role_id_1 for role in message.author.roles)
-            
-            
-            
+
             if user_balance is not None:
                 reward = 50
                 balance = user_balance + reward
 
                 if has_special_role_id_1:
-                    balance += int(reward*0.5)
+                    balance += int(reward * 0.5)
                 elif yt_1:
-                    balance += int(reward*1)
+                    balance += int(reward * 1)
                 elif yt_serdar:
-                    balance += int(reward*1.5)
+                    balance += int(reward * 1.5)
                 elif yt_elite and booster:
-                    balance += int(reward*2)
+                    balance += int(reward * 2)
                 elif yt_legend:
-                    balance += int(reward*3.5)
+                    balance += int(reward * 3.5)
 
                 await self.update_user_balance(user_id, balance)
 
@@ -109,19 +104,22 @@ class Economy(commands.Cog):
             await ctx.send("Account registered successfully!")
         except ProgrammingError:
             await ctx.send("Account already registered!")
-            
+
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def add_money(self, ctx: commands.Context, user:discord.Member, amount:int):
+    async def add_money(self, ctx: commands.Context, user: discord.Member, amount: int):
         user_balance = await self.get_user_balance(user.id)
 
         if user_balance is not None:
             new_balance = user_balance + amount
             await self.update_user_balance(user.id, new_balance)
-            await ctx.send(f"{amount} {self.currency_icon} added to {user.display_name}'s balance. New balance: {new_balance}")
+            await ctx.send(
+                f"{amount} {self.currency_icon} added to {user.display_name}'s balance. New balance: {new_balance}"
+            )
         else:
-            await ctx.send(f"{user.display_name} doesn't have an account. They can use the `register` command to create one.")
-        
+            await ctx.send(
+                f"{user.display_name} doesn't have an account. They can use the `register` command to create one."
+            )
 
 
 async def setup(bot: commands.Bot):
