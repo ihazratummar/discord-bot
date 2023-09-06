@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from config import Bot
+import asyncio
 
 
 class ErrorCog(commands.Cog):
@@ -29,7 +30,9 @@ class ErrorCog(commands.Cog):
 
     ## this error for !command_error
     @commands.Cog.listener()
-    async def on_command_error(ctx: commands.Context, error: commands.CommandError):
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send(f"Missing required argument - {error.params.name}")
         elif isinstance(error, commands.CommandNotFound):
