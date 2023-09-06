@@ -21,18 +21,36 @@ class Images(commands.Cog):
                 headers={"User-Agent": "Mozilla/5.0"},
             )
             data = response.json()
-            art_url = data[0]["data"]["children"][0]["data"]["url"]
-            art_title = data[0]["data"]["children"][0]["data"]["title"]
-            embed = discord.Embed(title=art_title, color=discord.Color.random())
-            embed.set_image(url=art_url)
 
-            await interaction.response.send_message(
-                f"{subreddit}",
-                embed=embed,
-            )
+            if isinstance(data, list) and len(data) > 0:
+                art_data = data[0].get("data", {})
+                art_url = art_data.get("url")
+                art_title = art_data.get("title")
+
+            elif isinstance(data, dict):
+                children = data.get("data", {}).get("children", [])
+                if children:
+                    art_data = children[0]["data"]
+                    art_url = art_data.get("url")
+                    art_title = art_data.get("title")
+                else:
+                    art_url = None
+            else:
+                art_url = None
+
+            if art_url:
+                embed = discord.Embed(title=art_title, color=discord.Color.random())
+                embed.set_image(url=art_url)
+                await interaction.response.send_message(
+                    f"From subreddit: {subreddit}", embed=embed
+                )
+            else:
+                await interaction.response.send_message(
+                    "Sorry, I couldn't find any art."
+                )
         except Exception as e:
             print(f"Error retrieving art: {e}")
-            await interaction.response.send_message("sorry, i couldn't find")
+            await interaction.response.send_message("Sorry, I couldn't find art.")
 
     @app_commands.command(name="imgur", description="search for images")
     async def imgur(self, interaction: discord.Interaction, *, query: str):
