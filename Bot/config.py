@@ -24,15 +24,12 @@ user = os.getenv("username")
 passw = os.getenv("password")
 
 exts = [
-    "cogs.mod",
     "cogs.error",
     "cogs.general",
     "cogs.fun_commands",
     "cogs.images",
-    "cogs.pubg_stats",
     "cogs.games",
     "cogs.welcomer",
-    "cogs.global_chat",
     "cogs.Rewards.economy",
     "cogs.Automod.automod",
     "cogs.Automod.settings",
