@@ -121,6 +121,18 @@ class Economy(commands.Cog):
                 f"{user.display_name} doesn't have an account. They can use the `register` command to create one."
             )
 
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def reset_balance(self, ctx: commands.Context, user: discord.Member):
+        user_balance = await self.get_user_balance(user.id)
+
+        if user_balance is not None:
+            new_balance = (user_balance * 0) + 50
+            await self.update_user_balance(user.id, new_balance)
+            await ctx.send(
+                f"> The balance has been reset. New Balance {self.currency_icon} {new_balance}"
+            )
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Economy(bot))
