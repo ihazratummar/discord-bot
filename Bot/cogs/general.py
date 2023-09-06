@@ -36,14 +36,6 @@ class General(commands.Cog):
         author = data["author"]
         await interaction.response.send_message(f"{author}:\n\n━━━━{quota}")
 
-    @app_commands.command(name="wiki", description="Search wikipedia")
-    async def wiki(self, interaction: discord.Interaction, query: str):
-        import wikipedia
-
-        wikipedia.set_lang("en")
-        result = wikipedia.summary(query, sentences=2)
-        await interaction.response.send_message(result)
-
     @app_commands.command(
         name="pc", description="Check my Gaming and Streaming pc Config"
     )
@@ -88,23 +80,6 @@ class General(commands.Cog):
         link = await interaction.channel.create_invite(max_age=0)
         await interaction.response.send_message(link)
 
-    # not working
-    @commands.command(name="pick", description="Choose between multiple options")
-    async def pick(self, ctx, *options: str):
-        if len(options) < 2:
-            await ctx.send("Please provide at least 2 options.")
-            return
-
-        chosen_option = random.choice(options)
-        embed = discord.Embed(
-            title="Choice",
-            description=f"Chosen option: {chosen_option}",
-            color=discord.Color.random(),
-        )
-        embed.add_field(name="Options", value="\n".join(options), inline=False)
-
-        await ctx.send(embed=embed)
-
     @app_commands.command(name="flip", description="flip a coin")
     async def flip(self, interaction: discord.Interaction):
         random_side = random.randint(0, 1)
@@ -112,28 +87,6 @@ class General(commands.Cog):
             await interaction.response.send_message("Head")
         else:
             await interaction.response.send_message("Tail")
-
-    @app_commands.command(name="weather", description="check your city weather")
-    async def weather(self, interaction: discord.Interaction, *, city: str):
-        url = f"http://api.weatherapi.com/v1/current.json?key={WEATHER_API}&q={city}"
-        response = requests.get(url)
-        data = response.json()
-
-        location = data["location"]["name"]
-        region = data["location"]["region"]
-        temp_c = data["current"]["temp_c"]
-        condition = data["current"]["condition"]["text"]
-        img_url = "http" + data["current"]["condition"]["icon"]
-        wind_kph = data["current"]["wind_kph"]
-
-        embed = discord.Embed(
-            title=f"Weather for {location}/{region}",
-            description=f"The condition in `{location}/{region}` is `{condition}`",
-        )
-        embed.add_field(name="Temperature", value=f"{temp_c}", inline=True)
-        embed.add_field(name="Wind", value=f"{wind_kph}", inline=True)
-        embed.set_thumbnail(url=img_url)
-        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot: commands.Bot):
