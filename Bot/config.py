@@ -54,6 +54,7 @@ class Bot(commands.Bot):
                 user=user,
                 password=passw,
                 autocommit=True,
+                pool_size=5,
                 connection_timeout=self.db_refresh_interval,
             )
             print("Connected to the database.")
@@ -63,7 +64,7 @@ class Bot(commands.Bot):
     async def check_db_connection(self):
         if self.db_connection and not self.db_connection.is_connected():
             print("database connection lost. Reconnecting...")
-            await self.create_db_connection()
+            await self.create_db_pool()
 
     async def on_ready(self):
         for ext in exts:
@@ -73,18 +74,28 @@ class Bot(commands.Bot):
         synced = await self.tree.sync()
         print(f"Synced {len(synced)} commands(s)")
         print("Bot is ready.")
+
         await self.create_db_pool()
 
-        activity = Activity(
-            name="CrazyforSurprise",
-            type=ActivityType.watching,
-        )
-        await self.change_presence(activity=activity)
-        await self.create_db_pool()
+    async def status_task():
+        while True:
+            await bot.change_presence(
+                activity=discord.Activity(
+                    type=discord.ActivityType.watching, name="CrazyforSurprise"
+                )
+            )
+            await asyncio.sleep(5)
+            await bot.change_presence(
+                activity=discord.Activity(
+                    type=discord.ActivityType.playing,
+                    name="Working for CrazyforSurprise",
+                )
+            )
+            await asyncio.sleep(5)
 
     async def close(self):
-        if self.db_connection:
-            self.db_connection.close()
+        if self.db_pool:
+            self.db_pool.close()
             print("Closed db connection.")
         await super().close()
 
