@@ -40,31 +40,6 @@ class Bot(commands.Bot):
         print(f"Synced {len(synced)} commands(s)")
         print("Bot is ready.")
 
-<<<<<<< HEAD
-        await self.create_db_connection()
-
-    async def close(self):
-        if self.db_connection:
-            self.db_connection.close()
-            print("Closed db connection.")
-        await super().close()
-
-    async def on_disconnect(self):
-        print("Disconnected from discord")
-        while not self.is_closed():
-            try:
-                await self.wait_until_ready()
-                await self.create_db_connection()
-                print("Reconnected to discord and database")
-            except Exception as e:
-                print(f"Reconnection failed. Error: {e}")
-                await asyncio.sleep(60)
-
-    async def on_connect(self):
-        print("Connected to discord")
-
-=======
->>>>>>> staging
 
 if __name__ == "__main__":
     bot = Bot(command_prefix=".", intents=discord.Intents.all())
