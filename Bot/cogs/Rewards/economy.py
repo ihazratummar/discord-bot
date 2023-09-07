@@ -18,7 +18,7 @@ class Economy(commands.Cog):
     async def get_user_balance(self, user_id: int):
         query = "SELECT balance FROM economy WHERE user_id = %s"
         values = (user_id,)
-        cursor = self.bot.db.cursor()
+        cursor = self.bot.db_connection.cursor()
         cursor.execute(query, values)
         result = cursor.fetchone()
         cursor.close()

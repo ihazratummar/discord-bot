@@ -40,12 +40,12 @@ class Bot(commands.Bot):
     def __init__(self, command_prefix: str, intents: discord.Intents, **kwargs):
         super().__init__(command_prefix, intents=intents, **kwargs)
         self.db_refresh_interval = 300
-        self.db_pool = None
+        # self.db_pool = None
         self.db_connection = None
 
-    async def create_db_pool(self):
+    async def create_db_connection(self):
         try:
-            self.db = mysql.connector.connect(
+            self.db_connection = mysql.connector.connect(
                 host=host,
                 database=data,
                 user=user,
@@ -55,13 +55,13 @@ class Bot(commands.Bot):
                 connection_timeout=self.db_refresh_interval,
             )
             print("Connected to the database.")
-        except (mysql.connector.Error, asyncpg.PoolError) as e:
-            print(f"Failed to create database pool. {e}")
+        except mysql.connector.Error as e:
+            print(f"Failed to create database connection. {e}")
 
     async def check_db_connection(self):
         if self.db_connection and not self.db_connection.is_connected():
             print("database connection lost. Reconnecting...")
-            await self.create_db_pool()
+            await self.create_db_connection()
 
     async def on_ready(self):
         for ext in exts:
@@ -72,18 +72,21 @@ class Bot(commands.Bot):
         print(f"Synced {len(synced)} commands(s)")
         print("Bot is ready.")
 
-        await self.create_db_pool()
+        await self.create_db_connection()
 
     async def close(self):
-        if self.db_pool:
-            self.db_pool.close()
+        if self.db_connection:
+            self.db_connection.close()
             print("Closed db connection.")
         await super().close()
 
     async def on_disconnect(self):
         print("Disconnected from database")
         await self.check_db_connection()
-        await self.create_db_pool()
+        await self.create_db_connection()
+
+    async def on_connect(self):
+        print("Connected to discord")
 
 
 if __name__ == "__main__":
