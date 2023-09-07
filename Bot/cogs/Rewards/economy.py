@@ -29,7 +29,7 @@ class Economy(commands.Cog):
         values = (user_id, balance, balance)
         cursor = self.bot.db_connection.cursor()
         cursor.execute(query, values)
-        self.bot.db.commit()
+        self.bot.db_connection.commit()
         cursor.close()
 
     @commands.Cog.listener()
