@@ -81,9 +81,10 @@ class Bot(commands.Bot):
         await super().close()
 
     async def on_disconnect(self):
-        print("Disconnected from database")
+        print("Disconnected from discord")
         await self.check_db_connection()
         await self.create_db_connection()
+        await bot.run(token)
 
     async def on_connect(self):
         print("Connected to discord")
