@@ -45,7 +45,7 @@ class AutoMod(commands.Cog):
         try:
             query = """ SELECT channel_id FROM log_channel WHERE guild_id = %s"""
             data = (str(guild_id),)
-            cursor = self.bot.db.cursor()
+            cursor = self.bot.db_connection.cursor()
             cursor.execute(query, data)
             result = cursor.fetchone()
             cursor.close()
