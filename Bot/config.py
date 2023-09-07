@@ -82,9 +82,14 @@ class Bot(commands.Bot):
 
     async def on_disconnect(self):
         print("Disconnected from discord")
-        await self.check_db_connection()
-        await self.create_db_connection()
-        await bot.run(token)
+        while not self.is_closed():
+            try:
+                await self.wait_until_ready()
+                await self.create_db_connection()
+                print("Reconnected to discord and database")
+            except Exception as e:
+                print(f"Reconnection failed. Error: {e}")
+                await asyncio.sleep(60)
 
     async def on_connect(self):
         print("Connected to discord")
