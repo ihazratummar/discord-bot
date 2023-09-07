@@ -27,7 +27,7 @@ class Economy(commands.Cog):
     async def update_user_balance(self, user_id: int, balance: int):
         query = "INSERT INTO economy (user_id, balance) VALUES (%s, %s) ON DUPLICATE KEY UPDATE balance = %s"
         values = (user_id, balance, balance)
-        cursor = self.bot.db.cursor()
+        cursor = self.bot.db_connection.cursor()
         cursor.execute(query, values)
         self.bot.db.commit()
         cursor.close()
