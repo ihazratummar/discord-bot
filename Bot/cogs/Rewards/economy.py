@@ -8,12 +8,13 @@ import os
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
 import requests
+from pilmoji import Pilmoji
 
 
 class Economy(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.currency_icon = "💵"
+        self.currency_icon = "💰"
         self.user_balances_file = "Bot/cogs/Rewards/user_balances.json"
 
     async def load_user_balances(self):
@@ -133,10 +134,12 @@ class Economy(commands.Cog):
 
         # Add text for the balance
         balance_text = f"Balance: {self.currency_icon} {balance}"
-        text_width, text_height = draw.textsize(balance_text, font)
+        text_width, text_height = draw.textsize(balance_text, font, font)
         text_x = (banner_width - text_width - 150) // 2  # Adjust the position as needed
         text_y = (banner_height - text_height) // 2  # Center vertically
-        draw.text((text_x, text_y), balance_text, fill=(0, 0, 0), font=font)
+        with Pilmoji(banner) as pilmoji:
+            pilmoji.text((text_x, text_y), balance_text, fill=(0, 0, 0), font=font)
+        # draw.text((text_x, text_y), balance_text, fill=(0, 0, 0), font=font)
 
         return banner
 
