@@ -4,33 +4,35 @@ from asyncpg import Record
 from config import Bot
 from discord import app_commands
 from typing import Dict
-import mysql.connector
 import json
-from mysql.connector.errors import ProgrammingError
-from datetime import datetime, timedelta
+import os
 
 
 class Economy(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.currency_icon = "💵"
+        self.user_balances_file = "Bot/cogs/Rewards/user_balances.json"
+
+    async def load_user_balances(self):
+        if os.path.exists(self.user_balances_file):
+            with open(self.user_balances_file, "r") as f:
+                return json.load(f)
+        else:
+            return {}
+
+    async def save_user_balances(self, balances):
+        with open(self.user_balances_file, "w") as f:
+            json.dump(balances, f, indent=4)
 
     async def get_user_balance(self, user_id: int):
-        query = "SELECT balance FROM economy WHERE user_id = %s"
-        values = (user_id,)
-        cursor = self.bot.db_connection.cursor()
-        cursor.execute(query, values)
-        result = cursor.fetchone()
-        cursor.close()
-        return result[0] if result else None
+        user_balances = await self.load_user_balances()
+        return user_balances.get(str(user_id))
 
     async def update_user_balance(self, user_id: int, balance: int):
-        query = "INSERT INTO economy (user_id, balance) VALUES (%s, %s) ON DUPLICATE KEY UPDATE balance = %s"
-        values = (user_id, balance, balance)
-        cursor = self.bot.db_connection.cursor()
-        cursor.execute(query, values)
-        self.bot.db_connection.commit()
-        cursor.close()
+        user_balances = await self.load_user_balances()
+        user_balances[str(user_id)] = balance
+        await self.save_user_balances(user_balances)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
@@ -81,9 +83,11 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def balance(self, ctx: commands.Context):
-        user_id = ctx.author.id
-        user_balance = await self.get_user_balance(user_id)
-        if user_balance is not None:
+        user_id = str(ctx.author.id)
+        user_balances = await self.load_user_balances()
+
+        if user_id in user_balances:
+            user_balance = user_balances[user_id]
             balance_display = f"{self.currency_icon} {user_balance}"
             await ctx.send(f"Your balance is: {balance_display}")
         else:
@@ -94,25 +98,25 @@ class Economy(commands.Cog):
     @commands.command()
     async def register(self, ctx: commands.Context):
         user_id = ctx.author.id
-        try:
-            query = "INSERT INTO economy (user_id, balance) VALUES (%s, 0)"
-            values = (user_id,)
-            cursor = self.bot.db.cursor()
-            cursor.execute(query, values)
-            self.bot.db.commit()
-            cursor.close()
-            await ctx.send("Account registered successfully!")
-        except ProgrammingError:
+        user_balances = await self.load_user_balances()
+
+        if user_id not in user_balances:
+            user_balances[user_id] = 0
+            await self.save_user_balances(user_balances)
+            await ctx.send("Account registered successfully")
+        else:
             await ctx.send("Account already registered!")
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def add_money(self, ctx: commands.Context, user: discord.Member, amount: int):
-        user_balance = await self.get_user_balance(user.id)
+        user_id = str(user.id)
+        user_balances = await self.load_user_balances()
 
-        if user_balance is not None:
-            new_balance = user_balance + amount
-            await self.update_user_balance(user.id, new_balance)
+        if user_id in user_balances:
+            user_balances[user_id] += amount
+            await self.save_user_balances(user_balances)
+            new_balance = user_balances[user_id]
             await ctx.send(
                 f"{amount} {self.currency_icon} added to {user.display_name}'s balance. New balance: {new_balance}"
             )
@@ -124,13 +128,19 @@ class Economy(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def reset_balance(self, ctx: commands.Context, user: discord.Member):
-        user_balance = await self.get_user_balance(user.id)
+        user_id = str(user.id)
+        user_balances = await self.load_user_balances()
 
-        if user_balance is not None:
-            new_balance = (user_balance * 0) + 50
-            await self.update_user_balance(user.id, new_balance)
+        if user_id in user_balances:
+            user_balances[user_id] = 50  # Reset to 50
+            await self.save_user_balances(user_balances)
+            new_balance = user_balances[user_id]
             await ctx.send(
                 f"> The balance has been reset. New Balance {self.currency_icon} {new_balance}"
+            )
+        else:
+            await ctx.send(
+                f"{user.display_name} doesn't have an account. They can use the `register` command to create one."
             )
 
 
