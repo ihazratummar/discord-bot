@@ -5,7 +5,7 @@ from config import Bot
 from typing import Dict
 import json
 import os
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
 import requests
 
@@ -90,6 +90,13 @@ class Economy(commands.Cog):
         avatar_data = BytesIO(avatar_response.content)
         avatar_image = Image.open(avatar_data)
 
+        # Resize and make the avatar round
+        avatar_image = avatar_image.resize((100, 100))
+        mask = Image.new("L", (100, 100), 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0, 100, 100), fill=255)
+        avatar_image.putalpha(mask)
+
         # Create a blank image for the banner
         banner_width = 400
         banner_height = 128
@@ -97,8 +104,8 @@ class Economy(commands.Cog):
 
         draw = ImageDraw.Draw(banner)
 
-        gradient_start = (50, 50, 50)  # Dark gray
-        gradient_end = (150, 150, 150)  # Light gray
+        gradient_start = (0, 146, 69)  # Dark green
+        gradient_end = (252, 238, 33)  # Yellow
         for y in range(banner_height):
             r = int(
                 gradient_start[0]
@@ -117,19 +124,17 @@ class Economy(commands.Cog):
         # Load a font (adjust the path to your font file)
         font = ImageFont.truetype("Lato-Bold.ttf", 24)
 
-        # Create a drawing context
-        # draw = ImageDraw.Draw(banner)
-
         # Paste the user's avatar on the right side
-        avatar_image = avatar_image.resize((128, 128))  # Resize the avatar if needed
-        banner.paste(avatar_image, (banner_width - 128, 0))
+        avatar_x = banner_width - 128
+        avatar_y = (banner_height - avatar_image.height) // 2
+        banner.paste(avatar_image, (avatar_x, avatar_y))
 
         # Add text for the balance
         balance_text = f"Balance: {self.currency_icon} {balance}"
         text_width, text_height = draw.textsize(balance_text, font)
         text_x = (banner_width - text_width - 150) // 2  # Adjust the position as needed
-        text_y = 75
-        draw.text((text_x, text_y), balance_text, fill=(255, 255, 255), font=font)
+        text_y = (banner_height - text_height) // 2  # Center vertically
+        draw.text((text_x, text_y), balance_text, fill=(0, 0, 0), font=font)
 
         return banner
 
@@ -158,20 +163,6 @@ class Economy(commands.Cog):
             await ctx.send(
                 "You don't have an account. Use the `register` command to create one."
             )
-
-    # @commands.command()
-    # async def balance(self, ctx: commands.Context):
-    #     user_id = str(ctx.author.id)
-    #     user_balances = await self.load_user_balances()
-
-    #     if user_id in user_balances:
-    #         user_balance = user_balances[user_id]
-    #         balance_display = f"{self.currency_icon} {user_balance}"
-    #         await ctx.send(f"Your balance is: {balance_display}")
-    #     else:
-    #         await ctx.send(
-    #             "You don't have an account. Use the `register` command to create one."
-    #         )
 
     @commands.command()
     async def register(self, ctx: commands.Context):
