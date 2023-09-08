@@ -2,10 +2,12 @@ import discord
 from discord.ext import commands
 from asyncpg import Record
 from config import Bot
-from discord import app_commands
 from typing import Dict
 import json
 import os
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
+import requests
 
 
 class Economy(commands.Cog):
@@ -81,6 +83,56 @@ class Economy(commands.Cog):
 
                 await self.update_user_balance(user_id, balance)
 
+    async def create_balance_banner(self, member: discord.Member, balance: int):
+        # Load the user's avatar
+        avatar_url = member.avatar.url
+        avatar_response = requests.get(avatar_url)
+        avatar_data = BytesIO(avatar_response.content)
+        avatar_image = Image.open(avatar_data)
+
+        # Create a blank image for the banner
+        banner_width = 400
+        banner_height = 128
+        banner = Image.new("RGB", (banner_width, banner_height), (0, 0, 0))
+
+        draw = ImageDraw.Draw(banner)
+
+        gradient_start = (50, 50, 50)  # Dark gray
+        gradient_end = (150, 150, 150)  # Light gray
+        for y in range(banner_height):
+            r = int(
+                gradient_start[0]
+                + (gradient_end[0] - gradient_start[0]) * y / banner_height
+            )
+            g = int(
+                gradient_start[1]
+                + (gradient_end[1] - gradient_start[1]) * y / banner_height
+            )
+            b = int(
+                gradient_start[2]
+                + (gradient_end[2] - gradient_start[2]) * y / banner_height
+            )
+            draw.line([(0, y), (banner_width, y)], fill=(r, g, b))
+
+        # Load a font (adjust the path to your font file)
+        font = ImageFont.truetype("arial.ttf", 24)
+
+        # Create a drawing context
+        # draw = ImageDraw.Draw(banner)
+
+        # Paste the user's avatar on the right side
+        avatar_image = avatar_image.resize((128, 128))  # Resize the avatar if needed
+        banner.paste(avatar_image, (banner_width - 128, 0))
+
+        # Add text for the balance
+        balance_text = f"Balance: {self.currency_icon} {balance}"
+        text_width, text_height = draw.textsize(balance_text, font)
+        text_x = (banner_width - text_width - 150) // 2  # Adjust the position as needed
+        text_y = 75
+        draw.text((text_x, text_y), balance_text, fill=(255, 255, 255), font=font)
+
+        return banner
+
     @commands.command()
     async def balance(self, ctx: commands.Context):
         user_id = str(ctx.author.id)
@@ -88,12 +140,38 @@ class Economy(commands.Cog):
 
         if user_id in user_balances:
             user_balance = user_balances[user_id]
-            balance_display = f"{self.currency_icon} {user_balance}"
-            await ctx.send(f"Your balance is: {balance_display}")
+
+            # Create the balance banner
+            banner = await self.create_balance_banner(ctx.author, user_balance)
+
+            # Save the banner as a temporary file
+            banner_path = "balance_banner.png"
+            banner.save(banner_path)
+
+            # Send the banner
+            with open(banner_path, "rb") as f:
+                await ctx.send(file=discord.File(f, "balance_banner.png"))
+
+            # Clean up the temporary file
+            os.remove(banner_path)
         else:
             await ctx.send(
                 "You don't have an account. Use the `register` command to create one."
             )
+
+    # @commands.command()
+    # async def balance(self, ctx: commands.Context):
+    #     user_id = str(ctx.author.id)
+    #     user_balances = await self.load_user_balances()
+
+    #     if user_id in user_balances:
+    #         user_balance = user_balances[user_id]
+    #         balance_display = f"{self.currency_icon} {user_balance}"
+    #         await ctx.send(f"Your balance is: {balance_display}")
+    #     else:
+    #         await ctx.send(
+    #             "You don't have an account. Use the `register` command to create one."
+    #         )
 
     @commands.command()
     async def register(self, ctx: commands.Context):
