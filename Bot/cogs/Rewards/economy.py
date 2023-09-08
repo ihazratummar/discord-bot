@@ -115,7 +115,7 @@ class Economy(commands.Cog):
             draw.line([(0, y), (banner_width, y)], fill=(r, g, b))
 
         # Load a font (adjust the path to your font file)
-        font = ImageFont.truetype("arial.ttf", 24)
+        font = ImageFont.truetype("Lato-Bold.ttf", 24)
 
         # Create a drawing context
         # draw = ImageDraw.Draw(banner)

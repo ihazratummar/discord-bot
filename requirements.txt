@@ -6,4 +6,5 @@ asyncpraw ==7.7.0
 Pillow==9.5.0
 mysql-connector-python==8.0.33
 aiohttp==3.8.4
-config~=0.5.1
+config==0.5.1
+Python-IO==0.3
