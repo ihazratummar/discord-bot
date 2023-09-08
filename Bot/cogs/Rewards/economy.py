@@ -88,10 +88,12 @@ class Economy(commands.Cog):
         avatar_url = member.avatar.url
         avatar_response = requests.get(avatar_url)
         avatar_data = BytesIO(avatar_response.content)
-        avatar_image = Image.open(avatar_data)
+        avatar_image = Image.open(avatar_data).convert("RGBA")
 
-        # Resize and make the avatar round
-        avatar_image = avatar_image.resize((100, 100))
+        # Resize the avatar
+        avatar_image = avatar_image.resize((100, 100), Image.ANTIALIAS)
+
+        # Create a circular mask for the avatar
         mask = Image.new("L", (100, 100), 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((0, 0, 100, 100), fill=255)
@@ -127,7 +129,7 @@ class Economy(commands.Cog):
         # Paste the user's avatar on the right side
         avatar_x = banner_width - 128
         avatar_y = (banner_height - avatar_image.height) // 2
-        banner.paste(avatar_image, (avatar_x, avatar_y))
+        banner.paste(avatar_image, (avatar_x, avatar_y), avatar_image)
 
         # Add text for the balance
         balance_text = f"Balance: {self.currency_icon} {balance}"
