@@ -33,10 +33,11 @@ class ErrorCog(commands.Cog):
     async def on_command_error(
         self, ctx: commands.Context, error: commands.CommandError
     ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            return await ctx.send(f"Missing required argument - {error.params.name}")
-        elif isinstance(error, commands.CommandNotFound):
+        if isinstance(error, commands.CommandNotFound):
             return await ctx.send(f"Command not found")
+
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(f"Incorrect arguments entered")
 
         elif isinstance(error, commands.MissingPermissions):
             perms = ""
@@ -47,6 +48,12 @@ class ErrorCog(commands.Cog):
 
         elif isinstance(error, commands.CommandOnCooldown):
             return await ctx.send(f"Command on cooldown")
+
+        elif isinstance(error, commands.ConversionError):
+            return await ctx.send("Invalid Arguments")
+
+        elif isinstance(error, commands.MemberNotFound):
+            return await ctx.send(f"Member not found")
 
         else:
             raise error

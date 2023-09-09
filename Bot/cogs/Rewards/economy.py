@@ -199,6 +199,13 @@ class Economy(commands.Cog):
                 f"{user.display_name} doesn't have an account. They can use the `register` command to create one."
             )
 
+    @add_money.error
+    async def add_money_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(
+                "> Give the required information | Ex - `.add_money @username 200` "
+            )
+
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def reset_balance(self, ctx: commands.Context, user: discord.Member):
