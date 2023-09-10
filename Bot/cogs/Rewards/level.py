@@ -4,6 +4,8 @@ from asyncpg import Record
 from config import Bot
 from discord import app_commands
 from config import db
+import json
+import os
 
 
 class Level(commands.Cog):

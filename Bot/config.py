@@ -17,7 +17,7 @@ token = os.getenv("DISCORD_TOKEN")
 exts = [
     "cogs.error",
     "cogs.general",
-    # "cogs.fun_commands",
+    "cogs.fun_commands",
     "cogs.images",
     "cogs.games",
     "cogs.welcomer",

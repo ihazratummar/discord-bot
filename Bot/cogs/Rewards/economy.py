@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 from asyncpg import Record
 from config import Bot
 from typing import Dict
@@ -9,6 +10,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
 import requests
 from pilmoji import Pilmoji
+import asyncio
+import pathlib
 
 
 class Economy(commands.Cog):
@@ -143,30 +146,61 @@ class Economy(commands.Cog):
 
         return banner
 
-    @commands.command()
-    async def balance(self, ctx: commands.Context):
-        user_id = str(ctx.author.id)
-        user_balances = await self.load_user_balances()
+    # @commands.command()
+    # async def balance(self, ctx: commands.Context):
+    #     user_id = str(ctx.author.id)
+    #     user_balances = await self.load_user_balances()
 
-        if user_id in user_balances:
-            user_balance = user_balances[user_id]
+    #     if user_id in user_balances:
+    #         user_balance = user_balances[user_id]
 
-            # Create the balance banner
-            banner = await self.create_balance_banner(ctx.author, user_balance)
+    #         # Create the balance banner
+    #         banner = await self.create_balance_banner(ctx.author, user_balance)
 
-            # Save the banner as a temporary file
+    #         # Save the banner as a temporary file
+    #         banner_path = "balance_banner.png"
+    #         banner.save(banner_path)
+
+    #         # Send the banner
+    #         with open(banner_path, "rb") as f:
+    #             await ctx.send(file=discord.File(f, "balance_banner.png"))
+
+    #         # Clean up the temporary file
+    #         os.remove(banner_path)
+    #     else:
+    #         await ctx.send(
+    #             "You don't have an account. Use the `register` command to create one."
+    #         )
+
+    @app_commands.command(name="balance", description="Check balance")
+    async def balance(self, interaction: discord.Interaction):
+        user_id = str(interaction.user.id)
+        user_balance = await self.load_user_balances()
+
+        if user_id in user_balance:
+            user_balance = user_balance[user_id]
+
+            # Assuming you have a function create_balance_banner that creates the banner
+            banner = await self.create_balance_banner(interaction.user, user_balance)
+
+            # Save the banner image to a file
             banner_path = "balance_banner.png"
             banner.save(banner_path)
 
-            # Send the banner
+            # Send the banner as a file and then remove it after a small delay
             with open(banner_path, "rb") as f:
-                await ctx.send(file=discord.File(f, "balance_banner.png"))
+                await interaction.response.send_message(
+                    file=discord.File(f, "balance_banner.png")
+                )
 
-            # Clean up the temporary file
-            os.remove(banner_path)
+            f.close()
+
+            # Introduce a delay before removing the temporary file
+            await asyncio.sleep(1)
+            os.remove(banner_path)  # Remove the temporary file
         else:
-            await ctx.send(
-                "You don't have an account. Use the `register` command to create one."
+            await interaction.response.send_message(
+                "You don't have an account. Use the `.register` command to create one."
             )
 
     @commands.command()
