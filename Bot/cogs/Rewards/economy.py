@@ -11,7 +11,6 @@ from io import BytesIO
 import requests
 from pilmoji import Pilmoji
 import asyncio
-import pathlib
 
 
 class Economy(commands.Cog):
@@ -142,35 +141,8 @@ class Economy(commands.Cog):
         text_y = (banner_height - text_height) // 2  # Center vertically
         with Pilmoji(banner) as pilmoji:
             pilmoji.text((text_x, text_y), balance_text, fill=(0, 0, 0), font=font)
-        # draw.text((text_x, text_y), balance_text, fill=(0, 0, 0), font=font)
 
         return banner
-
-    # @commands.command()
-    # async def balance(self, ctx: commands.Context):
-    #     user_id = str(ctx.author.id)
-    #     user_balances = await self.load_user_balances()
-
-    #     if user_id in user_balances:
-    #         user_balance = user_balances[user_id]
-
-    #         # Create the balance banner
-    #         banner = await self.create_balance_banner(ctx.author, user_balance)
-
-    #         # Save the banner as a temporary file
-    #         banner_path = "balance_banner.png"
-    #         banner.save(banner_path)
-
-    #         # Send the banner
-    #         with open(banner_path, "rb") as f:
-    #             await ctx.send(file=discord.File(f, "balance_banner.png"))
-
-    #         # Clean up the temporary file
-    #         os.remove(banner_path)
-    #     else:
-    #         await ctx.send(
-    #             "You don't have an account. Use the `register` command to create one."
-    #         )
 
     @app_commands.command(name="balance", description="Check balance")
     async def balance(self, interaction: discord.Interaction):
@@ -203,34 +175,52 @@ class Economy(commands.Cog):
                 "You don't have an account. Use the `.register` command to create one."
             )
 
-    @commands.command()
-    async def register(self, ctx: commands.Context):
-        user_id = ctx.author.id
+    @app_commands.command()
+    async def register(self, interaction: discord.Interaction):
+        user_id = str(interaction.user.id)
         user_balances = await self.load_user_balances()
 
         if user_id not in user_balances:
             user_balances[user_id] = 0
             await self.save_user_balances(user_balances)
-            await ctx.send("Account registered successfully")
+            await interaction.response.send_message("Account has been registered")
         else:
-            await ctx.send("Account already registered!")
+            await interaction.response.send_message("Account already registered!")
 
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    async def add_money(self, ctx: commands.Context, user: discord.Member, amount: int):
+    @app_commands.command()
+    async def remove_account(self, interaction: discord.Interaction):
+        user_id = str(interaction.user.id)
+        user_balances = await self.load_user_balances()
+
+        if user_id in user_balances:
+            del user_balances[user_id]
+            await self.save_user_balances(user_balances)
+            await interaction.response.send_message("Account removed")
+        else:
+            await interaction.response.send_message(
+                "You don't have an account to remove."
+            )
+
+    @app_commands.command(
+        name="add_money", description="Adds money to a user's balance"
+    )
+    @app_commands.checks.has_permissions(administrator=True)
+    async def add_money(
+        self, interaction: discord.Interaction, user: discord.User, balance: int
+    ):
         user_id = str(user.id)
         user_balances = await self.load_user_balances()
 
         if user_id in user_balances:
-            user_balances[user_id] += amount
+            user_balances[user_id] += balance
             await self.save_user_balances(user_balances)
             new_balance = user_balances[user_id]
-            await ctx.send(
-                f"{amount} {self.currency_icon} added to {user.display_name}'s balance. New balance: {new_balance}"
+            await interaction.response.send_message(
+                f"{self.currency_icon} {balance} added to {user.display_name}'s balance. New balance: {new_balance}"
             )
         else:
-            await ctx.send(
-                f"{user.display_name} doesn't have an account. They can use the `register` command to create one."
+            await interaction.response.send_message(
+                f"{user.display_name} does not exist"
             )
 
     @add_money.error
