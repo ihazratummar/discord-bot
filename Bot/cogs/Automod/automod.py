@@ -3,21 +3,22 @@ from discord.ext import commands
 from config import Bot
 import json
 
+
 class AutoMod(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.log_channels = self.load_log_channels()
-        
+
     def load_log_channels(self):
         try:
             with open("Bot/cogs/Automod/log_channels.json", "r") as file:
                 return json.load(file)
         except FileNotFoundError:
             return {}
-        
+
     def save_log_channels(self):
         with open("Bot/cogs/Automod/log_channels.json", "w") as file:
-            json.dump(self.log_channels, file, indent= 4)
+            json.dump(self.log_channels, file, indent=4)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -42,7 +43,7 @@ class AutoMod(commands.Cog):
                     if log_channel:
                         embed = discord.Embed(
                             title="Invite Link Deleted",
-                            description=f"Invite Link Deleted in #{message.channel.name}",
+                            description=f"Invite Link Deleted in <#{message.channel.id}>",
                             color=discord.Color.red(),
                         )
                         embed.add_field(name="Author", value=message.author.mention)

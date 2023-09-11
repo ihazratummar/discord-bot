@@ -21,7 +21,7 @@ exts = [
     "cogs.images",
     "cogs.games",
     "cogs.welcomer",
-    "cogs.Rewards.economy",
+    # "cogs.Rewards.economy",
     "cogs.Automod.automod",
 ]
 
