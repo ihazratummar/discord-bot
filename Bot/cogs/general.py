@@ -17,11 +17,6 @@ class General(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    # @app_commands.command()
-    # #@app_commands.checks.cooldown(1, 10, key=lambda i: (i.user.id))
-    # async def hi(self, interaction: discord.Interaction):
-    #     await interaction.response.send_message(f"Hi how are you")
-
     @app_commands.command(name="ping", description="server ping")
     async def ping(self, interaction: discord.Interaction):
         await interaction.response.send_message(

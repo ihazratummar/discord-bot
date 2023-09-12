@@ -39,6 +39,10 @@ class Bot(commands.Bot):
         print(f"Synced {len(synced)} commands(s)")
         print("Bot is ready.")
 
+        await self.change_presence(
+            activity=discord.Game(name="Moderating CrazyForSurprise")
+        )
+
 
 if __name__ == "__main__":
     bot = Bot(command_prefix=".", intents=discord.Intents.all())
