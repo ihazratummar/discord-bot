@@ -11,13 +11,13 @@ class AutoMod(commands.Cog):
 
     def load_log_channels(self):
         try:
-            with open("Bot/cogs/Automod/log_channels.json", "r") as file:
+            with open("Bot/cogs/Moreration/log_channels.json", "r") as file:
                 return json.load(file)
         except FileNotFoundError:
             return {}
 
     def save_log_channels(self):
-        with open("Bot/cogs/Automod/log_channels.json", "w") as file:
+        with open("Bot/cogs/Moreration/log_channels.json", "w") as file:
             json.dump(self.log_channels, file, indent=4)
 
     @commands.Cog.listener()

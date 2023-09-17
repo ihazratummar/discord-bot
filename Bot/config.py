@@ -22,7 +22,7 @@ exts = [
     "cogs.games",
     "cogs.welcomer",
     "cogs.Rewards.economy",
-    "cogs.Automod.automod",
+    "cogs.Moreration.automod",
 ]
 
 
