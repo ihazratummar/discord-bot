@@ -23,6 +23,7 @@ exts = [
     "cogs.welcomer",
     "cogs.Rewards.economy",
     "cogs.Moreration.automod",
+    "cogs.crypto.crypto_price",
 ]
 
 
