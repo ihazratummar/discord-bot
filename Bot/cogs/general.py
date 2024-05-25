@@ -6,7 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
-import aiohttp
+from .Buttons.social_links import SocialLinks
 
 load_dotenv()
 
@@ -60,13 +60,21 @@ class General(commands.Cog):
 
     @app_commands.command(name="social")
     async def social(self, interaction: discord.Interaction):
-        await interaction.response.send_message(
-            f"You can check all my social profile here :\nhttps://wlo.link/@crazyforsurprise"
+        embed = discord.Embed(
+            title= "Social Links",
+            description= "Check Click and Visit Our Official Links for More info!",
+            colour= discord.Colour.brand_green()
         )
+        embed.set_thumbnail(url="https://media.tenor.com/-Nc9wGWx3X8AAAAi/pepe-fastest-pepe-the-frog.gif")
+        embed.set_image(url="https://media1.tenor.com/m/WmU_8UAyg_8AAAAC/night.gif")
+        embed.add_field(name="<:discord:1243197853371859017> Discord", value="[Discord](https://discord.gg/DhsEvqHyE9)")
+        embed.add_field(name="<:facebook:1243197848498077716> Facebook", value="[Facebook](https://www.facebook.com/crazyforsurprise)")
+        embed.add_field(name="<:youtube:1243197856014139485> YouTube", value="[YouTube](https://www.youtube.com/crazyforsurprise)")
+        embed.add_field(name="<:instagram:1243197850880446464> Instagram", value="[Instagram](https://www.instagram.com/ummaroyin/)")
 
-        # Send the meme to the Discord channel
-        await interaction.response.send_message(file=file)
-
+        await interaction.response.send_message(
+            embed= embed, view=SocialLinks()  
+        )
     @app_commands.command(name="youtube", description="search video")
     async def youtube(self, interaction: discord.Interaction, search: str):
         response = requests.get(f"https://youtube.com/results?search_query={search}")
