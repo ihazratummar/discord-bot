@@ -1,12 +1,9 @@
+#config.py
 # region imports <- This is foldable
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
-from asyncpg.pool import create_pool
-import asyncpg
-import urllib.parse
-import asyncio
 from discord import Activity, ActivityType
 
 # endregion
@@ -21,9 +18,14 @@ exts = [
     "cogs.images",
     "cogs.games",
     "cogs.welcomer",
+<<<<<<< HEAD
     "cogs.Rewards.economy",
     "cogs.Moreration.automod",
     "cogs.crypto.crypto_price",
+=======
+    # "cogs.Rewards.economy",
+    # "cogs.Automod.automod",
+>>>>>>> main
 ]
 
 
